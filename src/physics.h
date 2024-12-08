@@ -5,7 +5,7 @@
 struct Physics_s {
     fix16 x;
     fix16 y;
-}
+};
 
 extern Physics **ALL_PHYSICS;
 

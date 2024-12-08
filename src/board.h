@@ -6,5 +6,3 @@ struct Board_s {
 
 Board *Board_init(void);
 void Board_del(Board *b);
-
-void Board_draw(Board *b);
