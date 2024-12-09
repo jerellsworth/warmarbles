@@ -1,7 +1,8 @@
 #include "bh.h"
 
 struct Game_s {
-    u8 PLACEHOLDER;
+    Tube *tube1;
+    Tube *tube2;
 };
 
 Game *Game_init(void);

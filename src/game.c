@@ -10,12 +10,14 @@ Game *Game_init(void) {
 
 void Game_run(Game *g) {
     Board *b = Board_init();
-    Tube *t1 = Tube_init(0, FALSE);
-    Physics *p1 = Physics_init_marble(FIX16(32), FIX16(40));
+    g->tube1 = Tube_init(0, FALSE);
+    Player *p1 = Player_init(g, g->type1);
+    Physics *m1 = Physics_init_marble(FIX16(32), FIX16(40));
     p1->dx = FIX16(1);
-    Physics *p2 = Physics_init_marble(FIX16(320 - 32), FIX16(44));
+    Physics *m2 = Physics_init_marble(FIX16(320 - 32), FIX16(44));
     p2->dx = FIX16(-1);
     while (TRUE) {
+        Player_update(p1);
         Physics_update_all();
         SPR_update();
         SYS_doVBlankProcess();
