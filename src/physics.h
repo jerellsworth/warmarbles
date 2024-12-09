@@ -15,6 +15,7 @@ struct Physics_s {
 
     fix16 r; // radius
     fix16 m; // mass
+    fix16 inv_m; // 1/mass
 
     Sprite *sprite;
     fix16 sprite_offset_x;

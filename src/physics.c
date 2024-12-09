@@ -40,17 +40,27 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
     fix32 thresh = fix16MulTo32(r_plus_r, r_plus_r);
 
     if (dist <= thresh) {
-        fix16 total_mass = p1->m + p2->m;
-        fix16 diff_mass = p1->m - p2->m;
-        fix16 rat_mass = fix16Div(diff_mass, total_mass);
-        fix16 p1dx = p1->dx;
-        fix16 p1dy = p1->dy;
-        fix16 p2dx = p2->dx;
-        fix16 p2dy = p2->dy;
-        p1->dx = fix16Mul(rat_mass, p1dx) + fix16Mul(fix16Div(p2->m << 1, total_mass), p2dx);
-        p1->dy = fix16Mul(rat_mass, p1dy) + fix16Mul(fix16Div(p2->m << 1, total_mass), p2dy);
-        p2->dx = fix16Mul(rat_mass, p2dx) + fix16Mul(fix16Div(p1->m << 1, total_mass), p1dx);
-        p2->dy = fix16Mul(rat_mass, p2dy) + fix16Mul(fix16Div(p1->m << 1, total_mass), p1dy);
+        // https://gamedev.stackexchange.com/a/7901
+        fix16 norm_x, norm_y;
+        normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
+        fix16 diff_dx = p1->dx - p2->dx;
+        fix16 diff_dy = p1->dy - p2->dy;
+        fix16 dot = fix16Mul(norm_x, diff_dx) + fix16Mul(norm_y, diff_dy);
+
+        if (dot <= 0) return FALSE;
+
+        fix16 imp_str = fix16Mul(
+            dot + (dot >> 1),
+            (p1->inv_m + p2->inv_m)
+        );
+        fix16 imp_x = fix16Mul(imp_str, norm_x);
+        fix16 imp_y = fix16Mul(imp_str, norm_y);
+
+        p1->dx -= fix16Mul(imp_x, p1->inv_m);
+        p1->dy -= fix16Mul(imp_y, p1->inv_m);
+        p2->dx += fix16Mul(imp_x, p2->inv_m);
+        p2->dy += fix16Mul(imp_y, p2->inv_m);
+
         return TRUE;
     }
     return FALSE;
@@ -94,6 +104,7 @@ Physics *Physics_init_marble(fix16 x, fix16 y) {
 
     p->r = FIX16(8);
     p->m = FIX16(1);
+    p->inv_m = FIX16(1);
 
     p->x = x;
     p->y = y;
