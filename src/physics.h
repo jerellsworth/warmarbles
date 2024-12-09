@@ -7,10 +7,14 @@
 
 struct Physics_s {
     u8 reg_idx;
+
     fix16 x;
     fix16 y;
     fix16 dx;
     fix16 dy;
+
+    fix16 r; // radius
+    fix16 m; // mass
 
     Sprite *sprite;
     fix16 sprite_offset_x;
@@ -22,6 +26,7 @@ extern Physics **ALL_PHYSICS;
 Physics *Physics_init(void);
 void Physics_del(Physics *p);
 
+bool Physics_check_collision(Physics *p1, Physics *p2);
 void Physics_update(Physics *p);
 void Physics_update_all(void);
 

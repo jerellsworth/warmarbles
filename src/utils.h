@@ -11,3 +11,4 @@ void agg_and_fade_in_all(
     const u16 *pal_3_data,
     u16 numFrame
 );
+fix32 fix16MulTo32(fix16 val1, fix16 val2);

@@ -84,3 +84,9 @@ void agg_and_fade_in_all(
     PAL_fadeInAll(pal_full, numFrame, FALSE);
     free(pal_full);
 }
+
+FORCE_INLINE fix32 fix16MulTo32(fix16 val1, fix16 val2)
+{
+    return muls(val1, val2) >> FIX16_FRAC_BITS;
+}
+
