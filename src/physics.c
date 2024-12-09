@@ -43,10 +43,14 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         fix16 total_mass = p1->m + p2->m;
         fix16 diff_mass = p1->m - p2->m;
         fix16 rat_mass = fix16Div(diff_mass, total_mass);
-        p1->dx = fix16Mul(rat_mass, p1->dx) + fix16Mul(fix16Div(p2->m << 1, total_mass), p2->dx);
-        p1->dy = fix16Mul(rat_mass, p1->dy) + fix16Mul(fix16Div(p2->m << 1, total_mass), p2->dy);
-        p2->dx = fix16Mul(rat_mass, p2->dx) + fix16Mul(fix16Div(p1->m << 1, total_mass), p1->dx);
-        p2->dy = fix16Mul(rat_mass, p2->dy) + fix16Mul(fix16Div(p1->m << 1, total_mass), p1->dy);
+        fix16 p1dx = p1->dx;
+        fix16 p1dy = p1->dy;
+        fix16 p2dx = p2->dx;
+        fix16 p2dy = p2->dy;
+        p1->dx = fix16Mul(rat_mass, p1dx) + fix16Mul(fix16Div(p2->m << 1, total_mass), p2dx);
+        p1->dy = fix16Mul(rat_mass, p1dy) + fix16Mul(fix16Div(p2->m << 1, total_mass), p2dy);
+        p2->dx = fix16Mul(rat_mass, p2dx) + fix16Mul(fix16Div(p1->m << 1, total_mass), p1dx);
+        p2->dy = fix16Mul(rat_mass, p2dy) + fix16Mul(fix16Div(p1->m << 1, total_mass), p1dy);
         return TRUE;
     }
     return FALSE;
@@ -54,6 +58,7 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
 
 void Physics_update(Physics *p) {
     if (!(p->dx || p->dy)) return;
+    // TODO apply drag
     p->x += p->dx;
     p->y += p->dy;
     if (p->sprite) {
