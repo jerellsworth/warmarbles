@@ -10,6 +10,7 @@ Game *Game_init(void) {
 
 void Game_run(Game *g) {
     Board *b = Board_init();
+    Tube *t1 = Tube_init(0, FALSE);
     Physics *p1 = Physics_init_marble(FIX16(32), FIX16(40));
     p1->dx = FIX16(1);
     Physics *p2 = Physics_init_marble(FIX16(320 - 32), FIX16(44));
