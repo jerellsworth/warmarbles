@@ -67,8 +67,42 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
 }
 
 void Physics_update(Physics *p) {
+    ++p->frames_alive;
+
     if (!(p->dx || p->dy)) return;
-    // TODO apply drag
+
+    if (!(p->frames_alive & 7)) {
+        if (p->dx > DRAG) p->dx -= DRAG;
+        if (p->dx < -DRAG) p->dx += DRAG;
+        if (p->dy > DRAG) p->dy -= DRAG;
+        if (p->dy < -DRAG) p->dy += DRAG;
+    }
+
+    if (abs(p->dx) < DRAG) p->dx = 0;
+    if (abs(p->dy) < DRAG) p->dy = 0;
+
+    if (p->y - p->r <= 0) {
+        p->y = p->r;
+        p->dy = -p->dy;
+    } else if (p->y + p->r >= BOARD_HEIGHT) {
+        p->y = BOARD_HEIGHT - p->r;
+        p->dy = -p->dy;
+    }
+    if (p->x - p->r <= 0) {
+        // you're in the tray. No more horizontal movement allowed
+        p->x = p->r;
+        p->dx = 0;
+    } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
+        // on the shelf. shove into left tray
+        p->dx = -FIX16(3);
+    } else if (p->x >= FIX16(24) + BOARD_WIDTH && p->x < FIX16(32) + BOARD_WIDTH) {
+        // on the shelf. shove into right tray
+        p->dx = FIX16(3);
+    } else if (p->x >= FIX16(320)) {
+        // you're in the tray. No more horizontal movement allowed
+        p->x = FIX16(320) - p->r;
+        p->dx = 0;
+    }
     p->x += p->dx;
     p->y += p->dy;
     if (p->sprite) {

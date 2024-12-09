@@ -5,6 +5,8 @@
 
 #define PHYSICS_MAX_OBJECTS 80
 
+#define DRAG FIX16(0.025)
+
 struct Physics_s {
     u8 reg_idx;
 
@@ -20,6 +22,8 @@ struct Physics_s {
     Sprite *sprite;
     fix16 sprite_offset_x;
     fix16 sprite_offset_y;
+
+    u8 frames_alive;
 };
 
 extern Physics **ALL_PHYSICS;
