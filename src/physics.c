@@ -50,7 +50,8 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         //if (dot <= 0) return FALSE;
 
         fix16 imp_str = fix16Mul(
-            dot + (dot >> 1),
+            //dot + (dot >> 1),
+            dot,
             (p1->inv_m + p2->inv_m)
         );
         fix16 imp_x = fix16Mul(imp_str, norm_x);

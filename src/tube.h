@@ -13,5 +13,6 @@ struct Tube_s {
 
 Tube *Tube_init(fix16 x, bool reversed);
 void Tube_del(Tube *t);
+void Tube_move(Tube *t, fix16 dy);
 
 #endif

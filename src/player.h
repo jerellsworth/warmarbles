@@ -6,6 +6,7 @@
 struct Player_s {
     Game *game;
     Tube *tube;
+    u8 cooldown;
 };
 
 Player *Player_init(Game *g, Tube *t);
