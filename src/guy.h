@@ -8,6 +8,8 @@ struct Guy_s {
     fix16 y;
     Sprite *sprite;
     u16 throw_frames;
+    bool walking_m0;
+    bool walking_m1;
 };
 
 Guy *Guy_init(fix16 x, fix16 y, bool reversed);

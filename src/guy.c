@@ -20,6 +20,10 @@ void Guy_del(Guy *t) {
 
 void Guy_move(Guy *g, fix16 dx, fix16 dy) {
     if (g->throw_frames > 0) return;
+    g->walking_m0 = TRUE;
+    if (!g->walking_m1) {
+        SPR_setAnim(g->sprite, 1);
+    }
     g->y += dy;
     g->x += dx;
     //if (t->g <= 0) t->g = 0;
@@ -38,6 +42,11 @@ void Guy_throw(Guy *g) {
 }
 
 void Guy_update(Guy *g) {
+    if (g->throw_frames == 0 && g->walking_m1 && (!g->walking_m0)) {
+        SPR_setAnim(g->sprite, 0);
+    }
+    g->walking_m1 = g->walking_m0;
+    g->walking_m0 = FALSE;
     if (g->throw_frames > 0) {
         --g->throw_frames;
         if (g->throw_frames == 0) {
