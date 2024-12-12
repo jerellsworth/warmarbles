@@ -15,6 +15,7 @@ Physics *Physics_init(void) {
     Physics *p = st_calloc(1, sizeof(Physics));
     p->reg_idx = reg_idx;
     ALL_PHYSICS[reg_idx] = p;
+    p->has_collision = TRUE;
     return p;
 }
 
@@ -67,20 +68,25 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
     return FALSE;
 }
 
+void _apply_drag(Physics *p, u8 bitshift) {
+    fix16 drag = DRAG << bitshift;
+    if (!(p->frames_alive & 7)) {
+        if (p->dx > drag) p->dx -= drag;
+        if (p->dx < -drag) p->dx += drag;
+        if (p->dy > drag) p->dy -= drag;
+        if (p->dy < -drag) p->dy += drag;
+    }
+
+    if (abs(p->dx) < drag) p->dx = 0;
+    if (abs(p->dy) < drag) p->dy = 0;
+}
+
 void Physics_update(Physics *p) {
     ++p->frames_alive;
 
     if (!(p->dx || p->dy)) return;
 
-    if (!(p->frames_alive & 7)) {
-        if (p->dx > DRAG) p->dx -= DRAG;
-        if (p->dx < -DRAG) p->dx += DRAG;
-        if (p->dy > DRAG) p->dy -= DRAG;
-        if (p->dy < -DRAG) p->dy += DRAG;
-    }
-
-    if (abs(p->dx) < DRAG) p->dx = 0;
-    if (abs(p->dy) < DRAG) p->dy = 0;
+    _apply_drag(p, 0);
 
     if (p->y - p->r <= 0) {
         p->y = p->r;
@@ -89,20 +95,37 @@ void Physics_update(Physics *p) {
         p->y = BOARD_HEIGHT - p->r;
         p->dy = -p->dy;
     }
-    if (p->x - p->r <= 0) {
-        // you're in the tray. No more horizontal movement allowed
-        p->x = p->r;
-        p->dx = 0;
-    } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
-        // on the shelf. shove into left tray
-        p->dx = -FIX16(3);
-    } else if (p->x >= FIX16(24) + BOARD_WIDTH && p->x < FIX16(32) + BOARD_WIDTH) {
-        // on the shelf. shove into right tray
-        p->dx = FIX16(3);
-    } else if (p->x >= FIX16(320)) {
-        // you're in the tray. No more horizontal movement allowed
-        p->x = FIX16(320) - p->r;
-        p->dx = 0;
+
+    // TODO dbg
+    if (p->x >= FIX16(24) + BOARD_WIDTH) {
+        p->x = FIX16(23) + BOARD_WIDTH;
+        p->dx = -p->dx;
+    }
+
+    if (p->has_collision) {
+        if (p->x - p->r <= 0) {
+            // you're in the tray. No more horizontal movement allowed
+            p->x = p->r;
+            p->dx = 0;
+            _apply_drag(p, 6);
+        } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
+            // on the shelf. shove into left tray
+            p->dx = -FIX16(3);
+            p->dy = FIX16(3);
+        } else if (p->x >= FIX16(24) + BOARD_WIDTH && p->x < FIX16(32) + BOARD_WIDTH) {
+            // on the shelf. shove into right tray
+            p->dx = FIX16(3);
+            p->dy = FIX16(3);
+        } else if (p->x >= FIX16(320)) {
+            // you're in the tray. No more horizontal movement allowed
+            p->x = FIX16(320) - p->r;
+            p->dx = 0;
+            _apply_drag(p, 6);
+        }
+    } else {
+        if (p->x >= FIX16(24) && p->x <= FIX16(24) + BOARD_WIDTH) {
+            p->has_collision = TRUE;
+        }
     }
     p->x += p->dx;
     p->y += p->dy;
@@ -120,9 +143,11 @@ void Physics_update_all(void) {
     for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
         Physics *pi = ALL_PHYSICS[i];
         if (!pi) continue;
+        if (!pi->has_collision) continue;
         for (u8 j = i + 1; j < PHYSICS_MAX_OBJECTS; ++j) {
             Physics *pj = ALL_PHYSICS[j];
             if (!pj) continue;
+            if (!pj->has_collision) continue;
             Physics_check_collision(pi, pj);
         }
     }
@@ -152,4 +177,18 @@ Physics *Physics_init_marble(fix16 x, fix16 y) {
         TILE_ATTR(PAL1, TRUE, FALSE, FALSE) 
         );
     return p;
+}
+
+Physics *Physics_find_nearby(fix16 x, fix16 y) {
+    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
+        Physics *pi = ALL_PHYSICS[i];
+        if (!pi) continue;
+        fix16 dx = x - pi->x;        
+        fix16 dy = y - pi->y;        
+        fix32 dist = fix16MulTo32(dx, dx) + fix16MulTo32(dy, dy);
+        if (dist <= PHYSICS_NEARBY_THRESH) {
+            return pi;
+        }
+    }
+    return NULL;
 }

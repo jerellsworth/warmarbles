@@ -37,7 +37,19 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
 
 void Guy_throw(Guy *g) {
     if (g->throw_frames > 0) return;
-    g->throw_frames = 5 * 10;
+    fix16 center_x = g->x + FIX16(12);
+    fix16 center_y = g->y + FIX16(64);
+    Physics *near = Physics_find_nearby(center_x, center_y);
+    if (!near) return;
+    g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
+    g->holding = near;
+    near->has_collision = FALSE;
+    near->x = g->x + FIX16(20);
+    near->y = g->y + FIX16(48);
+    near->dx = 0;
+    near->dy = FIX16(-40 / 2 / GUY_FRAMES_PER_ANIM); // traveling 40 pixels in 2 animations which take GUY_FRAMES_PER_ANIM frames
+    g->throw_dy = 0;
+    g->throw_dx = FIX16(3);
     SPR_setAnim(g->sprite, 2);
 }
 
@@ -49,7 +61,13 @@ void Guy_update(Guy *g) {
     g->walking_m0 = FALSE;
     if (g->throw_frames > 0) {
         --g->throw_frames;
-        if (g->throw_frames == 0) {
+        if (g->throw_frames == GUY_FRAMES_PER_ANIM * (10 - 2)) {
+            g->holding->dy = 0;
+        } else if (g->throw_frames == GUY_FRAMES_PER_ANIM * (10 - 5)) {
+            g->holding->dx = g->throw_dx;
+            g->holding->dy = g->throw_dy;
+            g->holding = NULL;
+        } else if (g->throw_frames == 0) {
             SPR_setAnim(g->sprite, 0);
         }
     }

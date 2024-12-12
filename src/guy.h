@@ -3,6 +3,8 @@
 
 #include "bh.h"
 
+#define GUY_FRAMES_PER_ANIM 5
+
 struct Guy_s {
     fix16 x;
     fix16 y;
@@ -10,6 +12,9 @@ struct Guy_s {
     u16 throw_frames;
     bool walking_m0;
     bool walking_m1;
+    Physics *holding;
+    fix16 throw_dy; // TODO depends on frames holding direction during throw
+    fix16 throw_dx;
 };
 
 Guy *Guy_init(fix16 x, fix16 y, bool reversed);

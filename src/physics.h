@@ -4,6 +4,7 @@
 #include "bh.h"
 
 #define PHYSICS_MAX_OBJECTS 80
+#define PHYSICS_NEARBY_THRESH FIX32(64)
 
 #define DRAG FIX16(0.025)
 
@@ -24,6 +25,8 @@ struct Physics_s {
     fix16 sprite_offset_y;
 
     u8 frames_alive;
+
+    bool has_collision;
 };
 
 extern Physics **ALL_PHYSICS;
@@ -36,5 +39,7 @@ void Physics_update(Physics *p);
 void Physics_update_all(void);
 
 Physics *Physics_init_marble(fix16 x, fix16 y);
+
+Physics *Physics_find_nearby(fix16 x, fix16 y);
 
 #endif
