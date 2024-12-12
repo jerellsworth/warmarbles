@@ -19,6 +19,7 @@ void Game_run(Game *g) {
     m2->dx = FIX16(-1);
     while (TRUE) {
         Player_update(p1);
+        Guy_update(g->guy1);
         Physics_update_all();
         SPR_update();
         SYS_doVBlankProcess();

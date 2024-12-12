@@ -18,14 +18,30 @@ void Guy_del(Guy *t) {
     free(t);
 }
 
-void Guy_move(Guy *t, fix16 dx, fix16 dy) {
-    t->y += dy;
-    t->x += dx;
-    //if (t->y <= 0) t->y = 0;
-    //if (t->y >= FIX16(192)) t->y = FIX16(192);
+void Guy_move(Guy *g, fix16 dx, fix16 dy) {
+    if (g->throw_frames > 0) return;
+    g->y += dy;
+    g->x += dx;
+    //if (t->g <= 0) t->g = 0;
+    //if (t->g >= FIX16(192)) t->g = FIX16(192);
     SPR_setPosition(
-        t->sprite,
-        fix16ToRoundedInt(t->x),
-        fix16ToRoundedInt(t->y)
+        g->sprite,
+        fix16ToRoundedInt(g->x),
+        fix16ToRoundedInt(g->y)
     );
+}
+
+void Guy_throw(Guy *g) {
+    if (g->throw_frames > 0) return;
+    g->throw_frames = 5 * 10;
+    SPR_setAnim(g->sprite, 2);
+}
+
+void Guy_update(Guy *g) {
+    if (g->throw_frames > 0) {
+        --g->throw_frames;
+        if (g->throw_frames == 0) {
+            SPR_setAnim(g->sprite, 0);
+        }
+    }
 }

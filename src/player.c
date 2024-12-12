@@ -22,4 +22,7 @@ void Player_update(Player *p) {
         --p->cooldown;
         return;
     }
+    if (joy & BUTTON_B) {
+        Guy_throw(p->guy);
+    }
 }

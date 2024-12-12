@@ -7,10 +7,13 @@ struct Guy_s {
     fix16 x;
     fix16 y;
     Sprite *sprite;
+    u16 throw_frames;
 };
 
 Guy *Guy_init(fix16 x, fix16 y, bool reversed);
 void Guy_del(Guy *t);
 void Guy_move(Guy *t, fix16 dx, fix16 dy);
+void Guy_throw(Guy *t);
+void Guy_update(Guy *t);
 
 #endif
