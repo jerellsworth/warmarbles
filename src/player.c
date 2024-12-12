@@ -13,15 +13,18 @@ void Player_del(Player *p) {
 
 void Player_update(Player *p) {
     u16 joy = JOY_readJoypad(JOY_1);
+    fix16 dx, dy;
     if (joy & BUTTON_UP) {
-        Guy_move(p->guy, 0, -FIX16(4));
+        dy = -FIX16(4);
     } else if (joy & BUTTON_DOWN) {
-        Guy_move(p->guy, 0, FIX16(4));
+        dy = FIX16(4);
     }
-    if (p->cooldown > 0) {
-        --p->cooldown;
-        return;
+    if (joy & BUTTON_LEFT) {
+        dx = -FIX16(4);
+    } else if (joy & BUTTON_RIGHT) {
+        dx = FIX16(4);
     }
+    Guy_move(p->guy, dx, dy);
     if (joy & BUTTON_B) {
         Guy_throw(p->guy);
     }

@@ -87,6 +87,10 @@ void Physics_update(Physics *p) {
     if (!(p->dx || p->dy)) return;
 
     _apply_drag(p, 0);
+    if (p->dx > PHYSICS_MAX_VELOCITY_VECTOR) p->dx = PHYSICS_MAX_VELOCITY_VECTOR;
+    if (p->dx < -PHYSICS_MAX_VELOCITY_VECTOR) p->dx = -PHYSICS_MAX_VELOCITY_VECTOR;
+    if (p->dy > PHYSICS_MAX_VELOCITY_VECTOR) p->dy = PHYSICS_MAX_VELOCITY_VECTOR;
+    if (p->dy < -PHYSICS_MAX_VELOCITY_VECTOR) p->dy = -PHYSICS_MAX_VELOCITY_VECTOR;
 
     if (p->y - p->r <= 0) {
         p->y = p->r;

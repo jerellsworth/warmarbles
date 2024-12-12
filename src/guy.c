@@ -19,15 +19,24 @@ void Guy_del(Guy *t) {
 }
 
 void Guy_move(Guy *g, fix16 dx, fix16 dy) {
-    if (g->throw_frames > 0) return;
+    if (dx == 0 && dy == 0) return;
+    if (g->throw_frames > 0) {
+        if (dx > 0) g->throw_dx += GUY_ENGLISH_PER_FRAME;
+        else if (dx < 0) g->throw_dx -= GUY_ENGLISH_PER_FRAME;
+        if (dy > 0) g->throw_dy += GUY_ENGLISH_PER_FRAME;
+        if (dy < 0) g->throw_dy -= GUY_ENGLISH_PER_FRAME;
+        return;
+    }
     g->walking_m0 = TRUE;
     if (!g->walking_m1) {
         SPR_setAnim(g->sprite, 1);
     }
     g->y += dy;
-    g->x += dx;
-    //if (t->g <= 0) t->g = 0;
-    //if (t->g >= FIX16(192)) t->g = FIX16(192);
+    if (g->y <= -FIX16(40)) {
+        g->y = -FIX16(40);
+    } else if (g->y >= FIX16(224 - 72)) {
+        g->y = FIX16(224 - 72);
+    }
     SPR_setPosition(
         g->sprite,
         fix16ToRoundedInt(g->x),
