@@ -5,11 +5,11 @@
 
 struct Player_s {
     Game *game;
-    Tube *tube;
+    Guy *guy;
     u8 cooldown;
 };
 
-Player *Player_init(Game *g, Tube *t);
+Player *Player_init(Game *g, Guy *guy);
 void Player_del(Player *p);
 
 void Player_update(Player *p);

@@ -1,8 +1,8 @@
 #include "bh.h"
 
 struct Game_s {
-    Tube *tube1;
-    Tube *tube2;
+    Guy *guy1;
+    Guy *guy2;
 };
 
 Game *Game_init(void);

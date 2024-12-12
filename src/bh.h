@@ -9,7 +9,7 @@ typedef struct Board_s Board;
 typedef struct Game_s Game;
 typedef struct Physics_s Physics;
 typedef struct Player_s Player;
-typedef struct Tube_s Tube;
+typedef struct Guy_s Guy;
 
 #include "resources.h"
 
@@ -17,7 +17,7 @@ typedef struct Tube_s Tube;
 #include "game.h"
 #include "physics.h"
 #include "player.h"
-#include "tube.h"
+#include "guy.h"
 #include "utils.h"
 
 #endif
