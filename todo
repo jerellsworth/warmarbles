@@ -1,7 +1,13 @@
 # next
-* tubes have "marble loading" and "marble ready" animations
-* marbles need darker outline
+* reset target/scoring
+* very simple AI
+  - goes all the way up, then all the way down. Throws marble when it finds one
+* rounds
+* bumpers
+* bumpers grow in most used space between rounds
+* better AI
 
 # eventually
+* marbles need darker outline
 
 # bugs

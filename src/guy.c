@@ -48,7 +48,7 @@ void Guy_throw(Guy *g) {
     if (g->throw_frames > 0) return;
     fix16 center_x = g->x + FIX16(12);
     fix16 center_y = g->y + FIX16(64);
-    Physics *near = Physics_find_nearby(center_x, center_y);
+    Physics *near = Physics_find_nearby(center_x, center_y, PHYSICS_T_MARBLE);
     if (!near) return;
     g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
     g->holding = near;

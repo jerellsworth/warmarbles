@@ -169,6 +169,7 @@ Physics *Physics_init_marble(fix16 x, fix16 y) {
     p->r = FIX16(8);
     p->m = FIX16(1);
     p->inv_m = FIX16(1);
+    p->type = PHYSICS_T_MARBLE;
 
     p->x = x;
     p->y = y;
@@ -183,10 +184,33 @@ Physics *Physics_init_marble(fix16 x, fix16 y) {
     return p;
 }
 
-Physics *Physics_find_nearby(fix16 x, fix16 y) {
+Physics *Physics_init_target(fix16 x, fix16 y) {
+    Physics *p = Physics_init();
+    if (!p) return NULL;
+
+    p->r = FIX16(16);
+    p->m = FIX16(32);
+    p->inv_m = FIX16(0.03125);
+
+    p->x = x;
+    p->y = y;
+    p->sprite_offset_x = FIX16(16);
+    p->sprite_offset_y = FIX16(16);
+    p->sprite = SPR_addSprite(
+        &SPR_TARGET,
+        fix16ToRoundedInt(x - p->sprite_offset_x),
+        fix16ToRoundedInt(y - p->sprite_offset_y),
+        TILE_ATTR(PAL1, TRUE, FALSE, FALSE) 
+        );
+    p->type = PHYSICS_T_TARGET;
+    return p;
+}
+
+Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t) {
     for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
         Physics *pi = ALL_PHYSICS[i];
         if (!pi) continue;
+        if (pi->type != t) continue;
         fix16 dx = x - pi->x;        
         fix16 dy = y - pi->y;        
         fix32 dist = fix16MulTo32(dx, dx) + fix16MulTo32(dy, dy);

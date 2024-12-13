@@ -9,6 +9,11 @@
 
 #define DRAG FIX16(0.025)
 
+enum PhysicsType_e {
+    PHYSICS_T_MARBLE,
+    PHYSICS_T_TARGET
+};
+
 struct Physics_s {
     u8 reg_idx;
 
@@ -28,6 +33,7 @@ struct Physics_s {
     u8 frames_alive;
 
     bool has_collision;
+    PhysicsType type;
 };
 
 extern Physics **ALL_PHYSICS;
@@ -40,7 +46,8 @@ void Physics_update(Physics *p);
 void Physics_update_all(void);
 
 Physics *Physics_init_marble(fix16 x, fix16 y);
+Physics *Physics_init_target(fix16 x, fix16 y);
 
-Physics *Physics_find_nearby(fix16 x, fix16 y);
+Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t);
 
 #endif
