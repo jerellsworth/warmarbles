@@ -244,7 +244,7 @@ Physics *Physics_init_target(fix16 x, fix16 y, Game *g) {
         &SPR_TARGET,
         fix16ToRoundedInt(x - p->sprite_offset_x),
         fix16ToRoundedInt(y - p->sprite_offset_y),
-        TILE_ATTR(PAL1, TRUE, FALSE, FALSE) 
+        TILE_ATTR(PAL3, TRUE, FALSE, FALSE) 
         );
     p->type = PHYSICS_T_TARGET;
     return p;
