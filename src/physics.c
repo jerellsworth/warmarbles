@@ -3,6 +3,27 @@
 Physics *_all_physics[PHYSICS_MAX_OBJECTS];
 Physics **ALL_PHYSICS = _all_physics;
 
+fix32 _THRESH[][2] = {{0, 0},{0, 0}};
+
+FORCE_INLINE u8 _type_to_thresh_idx(Physics *p) {
+    switch (p->type) {
+        case PHYSICS_T_TARGET:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+FORCE_INLINE fix32 _thresh(Physics *p1, Physics *p2) {
+    fix32 ret = _THRESH[_type_to_thresh_idx(p1)][_type_to_thresh_idx(p2)];
+    if (ret == 0) {
+        fix16 r_plus_r = p1->r + p2->r;
+        ret = fix16MulTo32(r_plus_r, r_plus_r);
+        _THRESH[_type_to_thresh_idx(p1)][_type_to_thresh_idx(p2)] = ret;
+    }
+    return ret;
+}
+
 Physics *Physics_init(Game *g) {
     u8 reg_idx = 0;
     for (; reg_idx < PHYSICS_MAX_OBJECTS; ++reg_idx) {
@@ -37,9 +58,9 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
     fix16 dy = p1_next_y - p2_next_y;
     fix32 dist = fix16MulTo32(dx, dx) + fix16MulTo32(dy, dy);
     
-    // TODO just hardcode the thresh depending on what things are bumping into eachother
     fix16 r_plus_r = p1->r + p2->r;
     fix32 thresh = fix16MulTo32(r_plus_r, r_plus_r);
+    //fix32 thresh = _thresh(p1, p2);
 
     if (dist <= thresh) {
         // https://gamedev.stackexchange.com/a/7901
