@@ -103,6 +103,21 @@ void _apply_drag(Physics *p, u8 bitshift) {
     if (abs(p->dy) < drag) p->dy = 0;
 }
 
+void _handle_tray(Physics *p, u8 tray_no) {
+    if (!p->in_tray) {
+        if (tray_no == 0) {
+            p->x = p->r;
+        } else {
+            p->x = FIX16(320) - p->r;
+        }
+        p->dx = 0;
+        p->in_tray = TRUE;
+        p->tray_no = tray_no;
+        Game_change_tray_marbles(p->game, tray_no, 1);
+    }
+    _apply_drag(p, 6);
+}
+
 void Physics_update(Physics *p) {
     ++p->frames_alive;
 
@@ -132,11 +147,7 @@ void Physics_update(Physics *p) {
 
     if (p->has_collision) {
         if (p->x - p->r <= 0) {
-            // you're in the tray. No more horizontal movement allowed
-            p->x = p->r;
-            p->dx = 0;
-            p->in_tray = TRUE;
-            _apply_drag(p, 6);
+            _handle_tray(p, 0);
         } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
             // on the shelf. shove into left tray
             if (p->type == PHYSICS_T_TARGET) Game_score(p->game, 1);
@@ -148,11 +159,7 @@ void Physics_update(Physics *p) {
             p->dx = FIX16(3);
             p->dy = FIX16(3);
         } else if (p->x >= FIX16(320)) {
-            // you're in the tray. No more horizontal movement allowed
-            p->in_tray = TRUE;
-            p->x = FIX16(320) - p->r;
-            p->dx = 0;
-            _apply_drag(p, 6);
+            _handle_tray(p, 1);
         }
     } else {
         if (p->x >= FIX16(24) && p->x <= FIX16(24) + BOARD_WIDTH) {

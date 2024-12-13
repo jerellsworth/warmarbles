@@ -35,6 +35,7 @@ struct Physics_s {
 
     bool has_collision;
     bool in_tray;
+    u8 tray_no;
     PhysicsType type;
 };
 

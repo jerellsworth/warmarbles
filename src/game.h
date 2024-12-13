@@ -27,6 +27,6 @@ void Game_draw_score(Game *g);
 void Game_score(Game *g, u8 player);
 
 // tray is 0 for left, 1 for right
-void Game_count_tray_marbles(u8 tray, u8 diff);
+void Game_change_tray_marbles(Game *g, u8 tray, u8 diff);
 
 #endif

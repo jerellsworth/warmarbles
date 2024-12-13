@@ -7,6 +7,7 @@
 #define GUY_ENGLISH_PER_FRAME FIX16(0.1)
 
 struct Guy_s {
+    Game *game;
     fix16 x;
     fix16 y;
     bool reversed;
@@ -22,7 +23,7 @@ struct Guy_s {
     fix16 x_offset_marble;
 };
 
-Guy *Guy_init(fix16 x, fix16 y, bool reversed);
+Guy *Guy_init(fix16 x, fix16 y, bool reversed, Game *g);
 void Guy_del(Guy *t);
 void Guy_move(Guy *t, fix16 dx, fix16 dy);
 void Guy_throw(Guy *t);

@@ -89,3 +89,6 @@ void Game_draw_score(Game *g) {
     sprintf(buf, "%02d", g->p2_score);
     VDP_drawText(buf, 24, 27);
 }
+
+void Game_change_tray_marbles(Game *g, u8 tray, u8 diff) {
+}
