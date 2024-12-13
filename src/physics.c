@@ -114,6 +114,7 @@ void Physics_update(Physics *p) {
             // you're in the tray. No more horizontal movement allowed
             p->x = p->r;
             p->dx = 0;
+            p->in_tray = TRUE;
             _apply_drag(p, 6);
         } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
             // on the shelf. shove into left tray
@@ -127,6 +128,7 @@ void Physics_update(Physics *p) {
             p->dy = FIX16(3);
         } else if (p->x >= FIX16(320)) {
             // you're in the tray. No more horizontal movement allowed
+            p->in_tray = TRUE;
             p->x = FIX16(320) - p->r;
             p->dx = 0;
             _apply_drag(p, 6);
@@ -153,10 +155,12 @@ void Physics_update_all(void) {
         Physics *pi = ALL_PHYSICS[i];
         if (!pi) continue;
         if (!pi->has_collision) continue;
+        if (pi->in_tray) continue;
         for (u8 j = i + 1; j < PHYSICS_MAX_OBJECTS; ++j) {
             Physics *pj = ALL_PHYSICS[j];
             if (!pj) continue;
             if (!pj->has_collision) continue;
+            if (pj->in_tray) continue;
             Physics_check_collision(pi, pj);
         }
     }

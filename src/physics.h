@@ -3,7 +3,7 @@
 
 #include "bh.h"
 
-#define PHYSICS_MAX_OBJECTS 80
+#define PHYSICS_MAX_OBJECTS 20
 #define PHYSICS_NEARBY_THRESH FIX32(64)
 #define PHYSICS_MAX_VELOCITY_VECTOR FIX16(6)
 
@@ -34,6 +34,7 @@ struct Physics_s {
     u8 frames_alive;
 
     bool has_collision;
+    bool in_tray;
     PhysicsType type;
 };
 

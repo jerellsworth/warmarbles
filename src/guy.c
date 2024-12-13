@@ -64,6 +64,7 @@ void Guy_throw(Guy *g) {
     g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
     g->holding = near;
     near->has_collision = FALSE;
+    near->in_tray = FALSE;
     near->x = g->x + g->x_offset_marble;
     near->y = g->y + FIX16(48);
     near->dx = 0;
