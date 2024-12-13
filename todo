@@ -1,5 +1,11 @@
 # next
 * optimize collision detection. Probably turn off collision for gutter marbles
+  - add a "in tray" flag.
+    ~ don't check collision when in tray
+    ~ turn off flag when guy grabs marble
+  - max physics objects only needs to be like 20 rather than 80
+* Do blog post with early footage, discuss cool monster and throwing animation
+* You lose if all the marbles are in your tray
 * rounds
 * bumpers
 * bumpers grow in most used space between rounds
