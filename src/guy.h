@@ -9,6 +9,7 @@
 struct Guy_s {
     fix16 x;
     fix16 y;
+    bool reversed;
     Sprite *sprite;
     u16 throw_frames;
     bool walking_m0;
@@ -16,6 +17,9 @@ struct Guy_s {
     Physics *holding;
     fix16 throw_dy; // TODO depends on frames holding direction during throw
     fix16 throw_dx;
+
+    fix16 x_offset_center;
+    fix16 x_offset_marble;
 };
 
 Guy *Guy_init(fix16 x, fix16 y, bool reversed);

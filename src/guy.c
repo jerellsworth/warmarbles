@@ -4,8 +4,19 @@ Guy *Guy_init(fix16 x, fix16 y, bool reversed) {
     Guy *t = st_calloc(1, sizeof(Guy));
     t->x = x;
     t->y = y;
+    t->reversed = reversed;
+    const SpriteDefinition *spr_def;
+    if (reversed) {
+        spr_def = &SPR_GUY2;
+        t->x_offset_center = FIX16(40 - 12);
+        t->x_offset_marble = FIX16(40 - 20);
+    } else {
+        spr_def = &SPR_GUY;
+        t->x_offset_center = FIX16(12);
+        t->x_offset_marble = FIX16(20);
+    }
     t->sprite = SPR_addSprite(
-        &SPR_GUY,
+        spr_def,
         fix16ToRoundedInt(x),
         fix16ToRoundedInt(y),
         TILE_ATTR(PAL2, TRUE, FALSE, reversed) 
@@ -46,19 +57,19 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
 
 void Guy_throw(Guy *g) {
     if (g->throw_frames > 0) return;
-    fix16 center_x = g->x + FIX16(12);
+    fix16 center_x = g->x + g->x_offset_center;
     fix16 center_y = g->y + FIX16(64);
     Physics *near = Physics_find_nearby(center_x, center_y, PHYSICS_T_MARBLE);
     if (!near) return;
     g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
     g->holding = near;
     near->has_collision = FALSE;
-    near->x = g->x + FIX16(20);
+    near->x = g->x + g->x_offset_marble;
     near->y = g->y + FIX16(48);
     near->dx = 0;
     near->dy = FIX16(-40 / 2 / GUY_FRAMES_PER_ANIM); // traveling 40 pixels in 2 animations which take GUY_FRAMES_PER_ANIM frames
     g->throw_dy = 0;
-    g->throw_dx = FIX16(3);
+    g->throw_dx = g->reversed ? -FIX16(3) : FIX16(3);
     SPR_setAnim(g->sprite, 2);
 }
 

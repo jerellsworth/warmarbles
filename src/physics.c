@@ -101,11 +101,13 @@ void Physics_update(Physics *p) {
         p->dy = -p->dy;
     }
 
-    // TODO dbg
+    /*
+    // dbg
     if (p->x >= FIX16(24) + BOARD_WIDTH && p->type == PHYSICS_T_MARBLE) {
         p->x = FIX16(23) + BOARD_WIDTH;
         p->dx = -p->dx;
     }
+    */
 
     if (p->has_collision) {
         if (p->x - p->r <= 0) {

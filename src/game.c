@@ -41,7 +41,9 @@ void Game_run(Game *g) {
     Board *b = Board_init();
     Game_draw_score(g);
     g->guy1 = Guy_init(0, 0, FALSE);
-    Player *p1 = Player_init(g, g->guy1);
+    g->guy2 = Guy_init(FIX16(320 - 32), 0, TRUE);
+    Player *p1 = Player_init(g, g->guy1, JOY_1, 0);
+    Player *p2 = Player_init(g, g->guy2, 0, 1);
     while (TRUE) {
         Physics *marbles[GAME_N_MARBLES];
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
@@ -58,7 +60,9 @@ void Game_run(Game *g) {
                 }
             }
             Player_update(p1);
+            Player_update(p2);
             Guy_update(g->guy1);
+            Guy_update(g->guy2);
             Physics_update_all();
             SPR_update();
             SYS_doVBlankProcess();
@@ -69,6 +73,7 @@ void Game_run(Game *g) {
         Physics_del(target);
     }
     Player_del(p1);
+    Player_del(p2);
     Board_del(b);
     
 }

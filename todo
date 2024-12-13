@@ -1,6 +1,4 @@
 # next
-* very simple AI
-  - goes all the way up, then all the way down. Throws marble when it finds one
 * rounds
 * bumpers
 * bumpers grow in most used space between rounds
@@ -12,3 +10,4 @@
 # eventually
 
 # bugs
+* need to stop throwing immediately when game ends so we don't write to uninitialized memory
