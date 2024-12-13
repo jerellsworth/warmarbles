@@ -40,14 +40,16 @@ void Game_score(Game *g, u8 player) {
 void Game_run(Game *g) {
     Board *b = Board_init();
     Game_draw_score(g);
-    g->guy1 = Guy_init(0, 0, FALSE);
-    g->guy2 = Guy_init(FIX16(320 - 32), 0, TRUE);
+    g->guy1 = Guy_init(0, 0, FALSE, g);
+    g->guy2 = Guy_init(FIX16(320 - 32), 0, TRUE, g);
     Player *p1 = Player_init(g, g->guy1, JOY_1, 0);
     Player *p2 = Player_init(g, g->guy2, 0, 1);
     while (TRUE) {
         Physics *marbles[GAME_N_MARBLES];
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
         u8 n_marbles = 0;
+        g->marbles_in_tray[0] = 0;
+        g->marbles_in_tray[1] = 0;
         u8 frames_to_marble = 60;
         g->state = GAME_STATE_IN_PROGRESS;
         while (g->state == GAME_STATE_IN_PROGRESS) {
@@ -91,4 +93,16 @@ void Game_draw_score(Game *g) {
 }
 
 void Game_change_tray_marbles(Game *g, u8 tray, u8 diff) {
+    g->marbles_in_tray[tray] += diff;
+
+    /*
+    char buf[4];
+    sprintf(buf, "%d,%d", g->marbles_in_tray[0], g->marbles_in_tray[1]);
+    VDP_drawText(buf, 0, 0);
+    */
+    for (u8 i = 0; i < 2; ++i) {
+        if (g->marbles_in_tray[i] >= GAME_N_MARBLES) {
+            Game_score(g, 1 - i);
+        }
+    }
 }

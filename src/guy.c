@@ -1,27 +1,28 @@
 #include "bh.h"
 
-Guy *Guy_init(fix16 x, fix16 y, bool reversed) {
-    Guy *t = st_calloc(1, sizeof(Guy));
-    t->x = x;
-    t->y = y;
-    t->reversed = reversed;
+Guy *Guy_init(fix16 x, fix16 y, bool reversed, Game *game) {
+    Guy *g = st_calloc(1, sizeof(Guy));
+    g->game = game;
+    g->x = x;
+    g->y = y;
+    g->reversed = reversed;
     const SpriteDefinition *spr_def;
     if (reversed) {
         spr_def = &SPR_GUY2;
-        t->x_offset_center = FIX16(40 - 12);
-        t->x_offset_marble = FIX16(40 - 20);
+        g->x_offset_center = FIX16(40 - 12);
+        g->x_offset_marble = FIX16(40 - 20);
     } else {
         spr_def = &SPR_GUY;
-        t->x_offset_center = FIX16(12);
-        t->x_offset_marble = FIX16(20);
+        g->x_offset_center = FIX16(12);
+        g->x_offset_marble = FIX16(20);
     }
-    t->sprite = SPR_addSprite(
+    g->sprite = SPR_addSprite(
         spr_def,
         fix16ToRoundedInt(x),
         fix16ToRoundedInt(y),
         TILE_ATTR(PAL2, TRUE, FALSE, reversed) 
         );
-    return t;
+    return g;
 }
 
 void Guy_del(Guy *t) {
@@ -64,7 +65,10 @@ void Guy_throw(Guy *g) {
     g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
     g->holding = near;
     near->has_collision = FALSE;
-    near->in_tray = FALSE;
+    if (near->in_tray) {
+        near->in_tray = FALSE;
+        Game_change_tray_marbles(g->game, near->tray_no, -1);
+    }
     near->x = g->x + g->x_offset_marble;
     near->y = g->y + FIX16(48);
     near->dx = 0;

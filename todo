@@ -1,11 +1,6 @@
 # next
-* You lose if all the marbles are in your tray
-  - Guy needs pointer to game
-  - Guy lift needs to decrement Game marble counter
-  - Game marble counting actually does somethiing
 * more severely limit velocity of targets
 * Do blog post with early footage, discuss cool monster and throwing animation
-* rounds
 * bumpers
 * bumpers grow in most used space between rounds
 * sounds
