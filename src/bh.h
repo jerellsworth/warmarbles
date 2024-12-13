@@ -5,6 +5,7 @@
 #include <maths.h>
 #include <memory.h>
 
+typedef enum GameState_e GameState;
 typedef enum PhysicsType_e PhysicsType;
 typedef struct Board_s Board;
 typedef struct Game_s Game;

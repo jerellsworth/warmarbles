@@ -3,7 +3,7 @@
 Physics *_all_physics[PHYSICS_MAX_OBJECTS];
 Physics **ALL_PHYSICS = _all_physics;
 
-Physics *Physics_init(void) {
+Physics *Physics_init(Game *g) {
     u8 reg_idx = 0;
     for (; reg_idx < PHYSICS_MAX_OBJECTS; ++reg_idx) {
         if (!ALL_PHYSICS[reg_idx]) {
@@ -14,6 +14,7 @@ Physics *Physics_init(void) {
     found_idx:
     Physics *p = st_calloc(1, sizeof(Physics));
     p->reg_idx = reg_idx;
+    p->game = g;
     ALL_PHYSICS[reg_idx] = p;
     p->has_collision = TRUE;
     return p;
@@ -101,7 +102,7 @@ void Physics_update(Physics *p) {
     }
 
     // TODO dbg
-    if (p->x >= FIX16(24) + BOARD_WIDTH) {
+    if (p->x >= FIX16(24) + BOARD_WIDTH && p->type == PHYSICS_T_MARBLE) {
         p->x = FIX16(23) + BOARD_WIDTH;
         p->dx = -p->dx;
     }
@@ -114,10 +115,12 @@ void Physics_update(Physics *p) {
             _apply_drag(p, 6);
         } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
             // on the shelf. shove into left tray
+            if (p->type == PHYSICS_T_TARGET) Game_score(p->game, 1);
             p->dx = -FIX16(3);
             p->dy = FIX16(3);
         } else if (p->x >= FIX16(24) + BOARD_WIDTH && p->x < FIX16(32) + BOARD_WIDTH) {
             // on the shelf. shove into right tray
+            if (p->type == PHYSICS_T_TARGET) Game_score(p->game, 0);
             p->dx = FIX16(3);
             p->dy = FIX16(3);
         } else if (p->x >= FIX16(320)) {
@@ -162,8 +165,8 @@ void Physics_update_all(void) {
     }
 }
 
-Physics *Physics_init_marble(fix16 x, fix16 y) {
-    Physics *p = Physics_init();
+Physics *Physics_init_marble(fix16 x, fix16 y, Game *g) {
+    Physics *p = Physics_init(g);
     if (!p) return NULL;
 
     p->r = FIX16(8);
@@ -184,13 +187,13 @@ Physics *Physics_init_marble(fix16 x, fix16 y) {
     return p;
 }
 
-Physics *Physics_init_target(fix16 x, fix16 y) {
-    Physics *p = Physics_init();
+Physics *Physics_init_target(fix16 x, fix16 y, Game *g) {
+    Physics *p = Physics_init(g);
     if (!p) return NULL;
 
     p->r = FIX16(16);
-    p->m = FIX16(32);
-    p->inv_m = FIX16(0.03125);
+    p->m = FIX16(16);
+    p->inv_m = FIX16(0.0625);
 
     p->x = x;
     p->y = y;

@@ -5,7 +5,7 @@
 
 #define PHYSICS_MAX_OBJECTS 80
 #define PHYSICS_NEARBY_THRESH FIX32(64)
-#define PHYSICS_MAX_VELOCITY_VECTOR FIX16(8)
+#define PHYSICS_MAX_VELOCITY_VECTOR FIX16(6)
 
 #define DRAG FIX16(0.025)
 
@@ -15,6 +15,7 @@ enum PhysicsType_e {
 };
 
 struct Physics_s {
+    Game *game;
     u8 reg_idx;
 
     fix16 x;
@@ -38,15 +39,15 @@ struct Physics_s {
 
 extern Physics **ALL_PHYSICS;
 
-Physics *Physics_init(void);
+Physics *Physics_init(Game *g);
 void Physics_del(Physics *p);
 
 bool Physics_check_collision(Physics *p1, Physics *p2);
 void Physics_update(Physics *p);
 void Physics_update_all(void);
 
-Physics *Physics_init_marble(fix16 x, fix16 y);
-Physics *Physics_init_target(fix16 x, fix16 y);
+Physics *Physics_init_marble(fix16 x, fix16 y, Game *g);
+Physics *Physics_init_target(fix16 x, fix16 y, Game *g);
 
 Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t);
 

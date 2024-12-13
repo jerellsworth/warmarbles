@@ -1,14 +1,14 @@
 # next
-* reset target/scoring
 * very simple AI
   - goes all the way up, then all the way down. Throws marble when it finds one
 * rounds
 * bumpers
 * bumpers grow in most used space between rounds
+* sounds
 * better AI
-
-# eventually
 * marbles need darker outline
 * shading on target
+
+# eventually
 
 # bugs
