@@ -1,4 +1,5 @@
 # next
+* optimize collision detection. Probably turn off collision for gutter marbles
 * rounds
 * bumpers
 * bumpers grow in most used space between rounds
