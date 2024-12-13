@@ -1,8 +1,9 @@
 # next
-* more severely limit velocity of targets
 * Do blog post with early footage, discuss cool monster and throwing animation
 * bumpers
 * bumpers grow in most used space between rounds
+* animation when marbles are warping in
+* after a few seconds of being still, marbles sitting on board are propelled in a random direction
 * sounds
 * better AI
 * marbles need darker outline
@@ -12,3 +13,4 @@
 
 # bugs
 * need to stop throwing immediately when game ends so we don't write to uninitialized memory
+* marble getting stuck in target
