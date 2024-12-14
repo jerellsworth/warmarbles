@@ -49,6 +49,7 @@ void Game_run(Game *g) {
     while (TRUE) {
         Physics *marbles[GAME_N_MARBLES];
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
+        Physics *bumper = Physics_init_bumper(FIX16(100), FIX16(112), g);
         u8 n_marbles = 0;
         g->marbles_in_tray[0] = 0;
         g->marbles_in_tray[1] = 0;
@@ -75,6 +76,7 @@ void Game_run(Game *g) {
             Physics_del(marbles[i]);
         }
         Physics_del(target);
+        Physics_del(bumper);
     }
     Player_del(p1);
     Player_del(p2);

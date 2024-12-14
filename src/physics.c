@@ -3,12 +3,14 @@
 Physics *_all_physics[PHYSICS_MAX_OBJECTS];
 Physics **ALL_PHYSICS = _all_physics;
 
-fix32 _THRESH[][2] = {{0, 0},{0, 0}};
+fix32 _THRESH[][3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
 
 FORCE_INLINE u8 _type_to_thresh_idx(Physics *p) {
     switch (p->type) {
         case PHYSICS_T_TARGET:
             return 1;
+        case PHYSICS_T_BUMPER:
+            return 2;
         default:
             return 0;
     }
@@ -49,6 +51,13 @@ void Physics_del(Physics *p) {
     free(p);
 }
 
+void _special_collision_handle(Physics *p) {
+    if (p->type == PHYSICS_T_BUMPER) {
+        SPR_setAnim(p->sprite, 1);
+        p->anim_frames = 14 * 3;
+    }
+}
+
 bool Physics_check_collision(Physics *p1, Physics *p2) {
     fix16 p1_next_x = p1->x + p1->dx;
     fix16 p1_next_y = p1->y + p1->dy;
@@ -80,10 +89,17 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         fix16 imp_x = fix16Mul(imp_str, norm_x);
         fix16 imp_y = fix16Mul(imp_str, norm_y);
 
-        p1->dx -= fix16Mul(imp_x, p1->inv_m);
-        p1->dy -= fix16Mul(imp_y, p1->inv_m);
-        p2->dx += fix16Mul(imp_x, p2->inv_m);
-        p2->dy += fix16Mul(imp_y, p2->inv_m);
+        if (!p1->stationary) {
+            p1->dx -= fix16Mul(imp_x, p1->inv_m);
+            p1->dy -= fix16Mul(imp_y, p1->inv_m);
+        }
+        if (!p2->stationary) {
+            p2->dx += fix16Mul(imp_x, p2->inv_m);
+            p2->dy += fix16Mul(imp_y, p2->inv_m);
+        }
+
+        _special_collision_handle(p1);
+        _special_collision_handle(p2);
 
         return TRUE;
     }
@@ -120,6 +136,13 @@ void _handle_tray(Physics *p, u8 tray_no) {
 
 void Physics_update(Physics *p) {
     ++p->frames_alive;
+
+    if (p->anim_frames > 0) {
+        --p->anim_frames;
+        if (p->anim_frames == 0) {
+            SPR_setAnim(p->sprite, 0);
+        }
+    }
 
     if (!(p->dx || p->dy)) return;
 
@@ -247,6 +270,29 @@ Physics *Physics_init_target(fix16 x, fix16 y, Game *g) {
         TILE_ATTR(PAL3, TRUE, FALSE, FALSE) 
         );
     p->type = PHYSICS_T_TARGET;
+    return p;
+}
+
+Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
+    Physics *p = Physics_init(g);
+    if (!p) return NULL;
+
+    p->r = FIX16(16);
+    p->m = FIX16(1);
+    p->inv_m = FIX16(1);
+    p->stationary = TRUE;
+
+    p->x = x;
+    p->y = y;
+    p->sprite_offset_x = FIX16(16);
+    p->sprite_offset_y = FIX16(16);
+    p->sprite = SPR_addSprite(
+        &SPR_BUMPER,
+        fix16ToRoundedInt(x - p->sprite_offset_x),
+        fix16ToRoundedInt(y - p->sprite_offset_y),
+        TILE_ATTR(PAL3, TRUE, FALSE, FALSE) 
+        );
+    p->type = PHYSICS_T_BUMPER;
     return p;
 }
 

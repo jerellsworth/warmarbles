@@ -12,7 +12,8 @@
 
 enum PhysicsType_e {
     PHYSICS_T_MARBLE,
-    PHYSICS_T_TARGET
+    PHYSICS_T_TARGET,
+    PHYSICS_T_BUMPER
 };
 
 struct Physics_s {
@@ -36,6 +37,10 @@ struct Physics_s {
 
     bool has_collision;
     bool in_tray;
+    bool stationary;
+
+    u8 anim_frames;
+
     u8 tray_no;
     PhysicsType type;
 };
@@ -51,6 +56,7 @@ void Physics_update_all(void);
 
 Physics *Physics_init_marble(fix16 x, fix16 y, Game *g);
 Physics *Physics_init_target(fix16 x, fix16 y, Game *g);
+Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g);
 
 Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t);
 
