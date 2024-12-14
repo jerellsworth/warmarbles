@@ -144,6 +144,17 @@ void Physics_update(Physics *p) {
         }
     }
 
+    if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
+        u8 r = fix16ToInt(p->x - FIX16(24)) >> 3;
+        u8 c = fix16ToInt(p->y) >> 3;
+        ++p->game->board->traffic[r][c];
+
+        // TODO dbg
+        char buf[3];
+        sprintf(buf, "%02d", p->game->board->traffic[r][c]);
+        VDP_drawText(buf, r, c + 3);
+    }
+
     if (!(p->dx || p->dy)) return;
 
     _apply_drag(p, 0);

@@ -17,6 +17,7 @@ struct Game_s {
     u8 p2_score;
     GameState state;
     u8 marbles_in_tray[2];
+    Board *board;
 };
 
 Game *Game_init(void);
