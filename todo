@@ -1,10 +1,7 @@
 # next
-* bumpers grow in most used space between rounds
-  - bumpers are not appearing in the right places
-* if marble gets stuck in a bumper, just blow the marble up and drop in a new one
-    - maybe count number of consecutive frames with a collison. Track last collision frame and number of frames with collision
+* if a bumper experiences N frames of collision, it turns into an accelerator instead. Hopefully should help with things getting stuck
+  - implement accellerator. Can use B Idle animation or palette swap the bumper
 * collision detection optimization
-* speed ups
 * animation when marbles are warping in
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
 * sounds

@@ -59,12 +59,15 @@ void _special_collision_handle(Physics *p) {
 }
 
 bool Physics_check_collision(Physics *p1, Physics *p2) {
+    if (p1->stationary && p2->stationary) return FALSE;
     fix16 p1_next_x = p1->x + p1->dx;
-    fix16 p1_next_y = p1->y + p1->dy;
     fix16 p2_next_x = p2->x + p2->dx;
-    fix16 p2_next_y = p2->y + p2->dy;
     fix16 dx = p1_next_x - p2_next_x;
+    if (abs(dx) > FIX16(33)) return FALSE;
+    fix16 p1_next_y = p1->y + p1->dy;
+    fix16 p2_next_y = p2->y + p2->dy;
     fix16 dy = p1_next_y - p2_next_y;
+    if (abs(dy) > FIX16(33)) return FALSE;
     fix32 dist = fix16MulTo32(dx, dx) + fix16MulTo32(dy, dy);
     
     fix16 r_plus_r = p1->r + p2->r;
@@ -150,10 +153,12 @@ void Physics_update(Physics *p) {
         if (r < 0 || r >= BOARD_HEIGHT_TILES >> 2 || c < 0 || c >= BOARD_WIDTH_TILES >> 2) return;
         ++p->game->board->traffic[r][c];
 
+        /*
         // TODO dbg
         char buf[3];
         sprintf(buf, "%02d", p->game->board->traffic[r][c]);
         VDP_drawText(buf, (c << 2) + 3, r << 2);
+        */
     }
 
     if (!(p->dx || p->dy)) return;
@@ -290,8 +295,8 @@ Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
     if (!p) return NULL;
 
     p->r = FIX16(16);
-    p->m = FIX16(1);
-    p->inv_m = FIX16(1);
+    p->m = FIX16(4);
+    p->inv_m = FIX16(0.25);
     p->stationary = TRUE;
 
     p->x = x;
