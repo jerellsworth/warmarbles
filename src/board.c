@@ -59,8 +59,8 @@ Physics *Board_add_doodad(Board *b, PhysicsType t) {
     u16 row, col;
     Board_most_used_cell(b, &row, &col);
     Physics *doodad = Physics_init_bumper(
-        FIX16((row << 5) + 16),
         FIX16((col << 5) + 16 + 24),
+        FIX16((row << 5) + 16),
         b->game
     );
     b->doodads[row][col] = doodad;
