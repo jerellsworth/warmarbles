@@ -40,22 +40,21 @@ void Game_score(Game *g, u8 player) {
 }
 
 void Game_run(Game *g) {
-    Board *b = Board_init();
+    Board *b = Board_init(g);
     g->board = b;
     Game_draw_score(g);
     g->guy1 = Guy_init(0, 0, FALSE, g);
     g->guy2 = Guy_init(FIX16(320 - 32), 0, TRUE, g);
     Player *p1 = Player_init(g, g->guy1, JOY_1, 0);
     Player *p2 = Player_init(g, g->guy2, 0, 1);
+    Board_reset(b);
     while (TRUE) {
         Physics *marbles[GAME_N_MARBLES];
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
-        //Physics *bumper = Physics_init_bumper(FIX16(100), FIX16(112), g);
         u8 n_marbles = 0;
         g->marbles_in_tray[0] = 0;
         g->marbles_in_tray[1] = 0;
         u8 frames_to_marble = 60;
-        Board_reset(b);
         g->state = GAME_STATE_IN_PROGRESS;
         while (g->state == GAME_STATE_IN_PROGRESS) {
             --frames_to_marble;
@@ -78,12 +77,11 @@ void Game_run(Game *g) {
             Physics_del(marbles[i]);
         }
         Physics_del(target);
-        //Physics_del(bumper);
+        Board_add_doodad(b, PHYSICS_T_BUMPER);
     }
     Player_del(p1);
     Player_del(p2);
     Board_del(b);
-    
 }
 
 void Game_del(Game *g) {

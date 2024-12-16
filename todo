@@ -1,9 +1,10 @@
 # next
-* shield effects here https://papoycore.itch.io/effects-pack-8 would be pretty good bumpers/portals
-* placeholder music track
-* Do blog post with early footage, discuss cool monster and throwing animation
-* bumpers
 * bumpers grow in most used space between rounds
+  - bumpers are not appearing in the right places
+* if marble gets stuck in a bumper, just blow the marble up and drop in a new one
+    - maybe count number of consecutive frames with a collison. Track last collision frame and number of frames with collision
+* collision detection optimization
+* speed ups
 * animation when marbles are warping in
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
 * sounds
