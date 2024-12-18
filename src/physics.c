@@ -54,7 +54,7 @@ void Physics_del(Physics *p) {
 void _special_collision_handle(Physics *p) {
     if (p->type == PHYSICS_T_BUMPER) {
         SPR_setAnim(p->sprite, 1);
-        p->anim_frames = 14 * 3;
+        p->anim_frames = 9 * 3;
     }
 }
 
@@ -70,9 +70,9 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
     if (abs(dy) > FIX16(33)) return FALSE;
     fix32 dist = fix16MulTo32(dx, dx) + fix16MulTo32(dy, dy);
     
-    fix16 r_plus_r = p1->r + p2->r;
-    fix32 thresh = fix16MulTo32(r_plus_r, r_plus_r);
-    //fix32 thresh = _thresh(p1, p2);
+    //fix16 r_plus_r = p1->r + p2->r;
+    //fix32 thresh = fix16MulTo32(r_plus_r, r_plus_r);
+    fix32 thresh = _thresh(p1, p2);
 
     if (dist <= thresh) {
         // https://gamedev.stackexchange.com/a/7901
@@ -148,6 +148,7 @@ void Physics_update(Physics *p) {
     }
 
     if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
+
         s16 r = fix16ToInt(p->y) >> 5;
         s16 c = (fix16ToInt(p->x) - 24) >> 5;
         if (r < 0 || r >= BOARD_HEIGHT_TILES >> 2 || c < 0 || c >= BOARD_WIDTH_TILES >> 2) return;
@@ -161,6 +162,7 @@ void Physics_update(Physics *p) {
         */
     }
 
+    if (p->stationary) return;
     if (!(p->dx || p->dy)) return;
 
     _apply_drag(p, 0);
@@ -240,6 +242,7 @@ void Physics_update_all(void) {
         }
     }
     for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
+        
         Physics *p = ALL_PHYSICS[i];
         if (!p) continue;
         Physics_update(p);
