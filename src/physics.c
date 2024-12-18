@@ -53,7 +53,9 @@ void Physics_del(Physics *p) {
 
 void _special_collision_handle(Physics *p) {
     if (p->type == PHYSICS_T_BUMPER) {
-        SPR_setAnim(p->sprite, 1);
+        if (p->sprite) {
+            SPR_setAnim(p->sprite, 1);
+        }
         p->anim_frames = 9 * 3;
     }
 }
@@ -142,7 +144,7 @@ void Physics_update(Physics *p) {
 
     if (p->anim_frames > 0) {
         --p->anim_frames;
-        if (p->anim_frames == 0) {
+        if (p->anim_frames == 0 && p->sprite) {
             SPR_setAnim(p->sprite, 0);
         }
     }
@@ -306,12 +308,14 @@ Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
     p->y = y;
     p->sprite_offset_x = FIX16(16);
     p->sprite_offset_y = FIX16(16);
+    /*
     p->sprite = SPR_addSprite(
         &SPR_BUMPER,
         fix16ToRoundedInt(x - p->sprite_offset_x),
         fix16ToRoundedInt(y - p->sprite_offset_y),
         TILE_ATTR(PAL3, TRUE, FALSE, FALSE) 
         );
+    */
     p->type = PHYSICS_T_BUMPER;
     return p;
 }
