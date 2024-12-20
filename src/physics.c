@@ -55,6 +55,15 @@ void Physics_del(Physics *p) {
     if (p->sprite) {
         SPR_releaseSprite(p->sprite);
     }
+    if (p->tile_h > 0 && p->tile_w > 0) {
+        VDP_clearTileMapRect(
+            BG_A,
+            p->tile_x,
+            p->tile_y,
+            p->tile_w,
+            p->tile_h
+        );
+    }
     ALL_PHYSICS[p->reg_idx] = NULL;
     free(p);
 }

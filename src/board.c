@@ -57,6 +57,7 @@ void Board_most_used_cell(Board *b, u16 *row, u16 *col) {
 }
 
 Physics *Board_add_doodad(Board *b, PhysicsType t) {
+
     u16 row, col;
     Board_most_used_cell(b, &row, &col);
     Physics *doodad = Physics_init_bumper(

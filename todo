@@ -1,7 +1,4 @@
 # next
-* make bumpers bg objects rather than sprites
-  - animate bumpers
-  - clear bumper on DEL
 * if a bumper experiences N frames of collision, it turns into an accelerator instead. Hopefully should help with things getting stuck
   - implement accellerator. Can use B Idle animation or palette swap the bumper
 * collision detection optimization
