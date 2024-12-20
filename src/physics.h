@@ -41,6 +41,14 @@ struct Physics_s {
 
     u8 anim_frames;
 
+    u16 tile_x;
+    u16 tile_y;
+    u8 tile_w;
+    u8 tile_h;
+    u16 tile_idx;
+    u8 anim;
+    u8 anim_frame;
+
     u8 tray_no;
     PhysicsType type;
 };

@@ -41,6 +41,7 @@ void Game_score(Game *g, u8 player) {
 
 void Game_run(Game *g) {
     Board *b = Board_init(g);
+    Physics_engine_init(g);
     g->board = b;
     Game_draw_score(g);
     g->guy1 = Guy_init(0, 0, FALSE, g);

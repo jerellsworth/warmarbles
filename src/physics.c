@@ -59,12 +59,49 @@ void Physics_del(Physics *p) {
     free(p);
 }
 
+void _bumper_draw(Physics *p) {
+    u16 base_tile = p->tile_idx + p->anim * 144 + p->anim_frame * 4;
+    for (u8 r = 0; r < p->tile_h; ++r) {
+        VDP_fillTileMapRectInc(
+            BG_A,
+            TILE_ATTR_FULL(PAL3, TRUE, FALSE, FALSE, base_tile),
+            p->tile_x,
+            p->tile_y + r,
+            p->tile_w,
+            1
+            );
+        base_tile += 36; // TODO don't hardcode this
+    }
+}
+
 void _special_collision_handle(Physics *p) {
     if (p->type == PHYSICS_T_BUMPER) {
-        if (p->sprite) {
-            SPR_setAnim(p->sprite, 1);
+        p->anim = 1;    
+        p->anim_frame = 0;
+        _bumper_draw(p);
+    }
+}
+
+void _special_anim_handle(Physics *p) {
+    // TODO there's a lot of hardcoded garbage here. Refactor
+    if (p->type == PHYSICS_T_BUMPER) {
+        if (!(p->frames_alive & 7)) {
+            if (p->anim == 0) {
+                if (p->anim_frame == 2) {
+                    p->anim_frame = 0;
+                } else {
+                    ++p->anim_frame;
+                }
+            } else {
+                if (p->anim_frame == 8) {
+                    p->anim_frame = 0;
+                    p->anim = 0;
+                } else {
+                    ++p->anim_frame;
+                }
+            }
+            _bumper_draw(p);
         }
-        p->anim_frames = 9 * 3;
     }
 }
 
@@ -150,12 +187,7 @@ void _handle_tray(Physics *p, u8 tray_no) {
 void Physics_update(Physics *p) {
     ++p->frames_alive;
 
-    if (p->anim_frames > 0) {
-        --p->anim_frames;
-        if (p->anim_frames == 0 && p->sprite) {
-            SPR_setAnim(p->sprite, 0);
-        }
-    }
+    _special_anim_handle(p);
 
     if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
 
@@ -316,14 +348,14 @@ Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
     p->y = y;
     p->sprite_offset_x = FIX16(16);
     p->sprite_offset_y = FIX16(16);
-    /*
-    p->sprite = SPR_addSprite(
-        &SPR_BUMPER,
-        fix16ToRoundedInt(x - p->sprite_offset_x),
-        fix16ToRoundedInt(y - p->sprite_offset_y),
-        TILE_ATTR(PAL3, TRUE, FALSE, FALSE) 
-        );
-    */
+
+    p->tile_x = fix16ToInt(x - p->sprite_offset_x) >> 3;
+    p->tile_y = fix16ToInt(y - p->sprite_offset_y) >> 3;
+    p->tile_w = 4;
+    p->tile_h = 4;
+    p->tile_idx = _BUMPER_TILE;
+    _bumper_draw(p);
+
     p->type = PHYSICS_T_BUMPER;
     return p;
 }
