@@ -52,6 +52,9 @@ struct Physics_s {
 
     u8 tray_no;
     PhysicsType type;
+
+    u16 collided_frames;
+    bool broken;
 };
 
 extern Physics **ALL_PHYSICS;

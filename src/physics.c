@@ -84,17 +84,41 @@ void _bumper_draw(Physics *p) {
 }
 
 bool _special_collision_handle(Physics *p1, Physics *p2) {
+    Physics *bumper = NULL;
+    Physics *other = NULL;
+    // It should only be one or the other unless something really bad happened
     if (p1->type == PHYSICS_T_BUMPER) {
-        p1->anim = 1;    
-        p1->anim_frame = 0;
-        _bumper_draw(p1);
+        bumper = p1;
+        other = p2;
+    } else if (p2->type == PHYSICS_T_BUMPER) {
+        bumper = p2;
+        other = p1;
     }
-    if (p2->type == PHYSICS_T_BUMPER) {
-        p2->anim = 1;    
-        p2->anim_frame = 0;
-        _bumper_draw(p2);
+
+    if (!bumper) return FALSE;
+
+    if ((!bumper->broken) && (bumper->collided_frames > 200)) {
+        bumper->broken = TRUE;
+        bumper->pal = PAL1;
+        _bumper_draw(bumper);
     }
-    return FALSE
+    if (bumper->broken) {
+        if (other->type == PHYSICS_T_MARBLE && other->anim_frames == 0) {
+            SPR_setAnim(other->sprite, 1);
+            other->anim_frames = 9;
+        }
+        fix16 other_dx_delta = other->dx >> 5;
+        fix16 other_dy_delta = other->dy >> 5;
+        other->dx += other_dx_delta;
+        other->dx += other_dy_delta;
+        return TRUE;
+    }
+
+    bumper->anim = 1;    
+    bumper->anim_frame = 0;
+    _bumper_draw(bumper);
+    return FALSE;
+
 }
 
 void _special_anim_handle(Physics *p) {
@@ -117,6 +141,13 @@ void _special_anim_handle(Physics *p) {
             }
             _bumper_draw(p);
         }
+    } else if (p->type == PHYSICS_T_MARBLE) {
+        if (p->anim_frames > 0) {
+            --p->anim_frames;
+            if (p->anim_frames == 0) {
+                SPR_setAnim(p->sprite, 0);
+            }
+        }
     }
 }
 
@@ -137,6 +168,10 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
     fix32 thresh = _thresh(p1, p2);
 
     if (dist <= thresh) {
+
+        if (p1->collided_frames < 65535) ++p1->collided_frames;
+        if (p2->collided_frames < 65535) ++p2->collided_frames;
+
         // https://gamedev.stackexchange.com/a/7901
         fix16 norm_x, norm_y;
         normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
@@ -157,7 +192,7 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         if (_special_collision_handle(p1, p2)) {
             return TRUE;
         }
-
+        
         if (!p1->stationary) {
             p1->dx -= fix16Mul(imp_x, p1->inv_m);
             p1->dy -= fix16Mul(imp_y, p1->inv_m);

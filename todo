@@ -1,7 +1,6 @@
 # next
-* special_collision_handle for accelerator
-* if a bumper experiences N frames of collision, it turns into an accelerator instead. Hopefully should help with things getting stuck
-  - implement accellerator. Can use B Idle animation or palette swap the bumper
+* animation for marbles being accelerated
+  - color changes to same color as the accelerators
 * collision detection optimization
 * animation when marbles are warping in
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
