@@ -73,7 +73,7 @@ void _bumper_draw(Physics *p) {
     for (u8 r = 0; r < p->tile_h; ++r) {
         VDP_fillTileMapRectInc(
             BG_A,
-            TILE_ATTR_FULL(PAL3, TRUE, FALSE, FALSE, base_tile),
+            TILE_ATTR_FULL(p->pal, TRUE, FALSE, FALSE, base_tile),
             p->tile_x,
             p->tile_y + r,
             p->tile_w,
@@ -83,12 +83,18 @@ void _bumper_draw(Physics *p) {
     }
 }
 
-void _special_collision_handle(Physics *p) {
-    if (p->type == PHYSICS_T_BUMPER) {
-        p->anim = 1;    
-        p->anim_frame = 0;
-        _bumper_draw(p);
+bool _special_collision_handle(Physics *p1, Physics *p2) {
+    if (p1->type == PHYSICS_T_BUMPER) {
+        p1->anim = 1;    
+        p1->anim_frame = 0;
+        _bumper_draw(p1);
     }
+    if (p2->type == PHYSICS_T_BUMPER) {
+        p2->anim = 1;    
+        p2->anim_frame = 0;
+        _bumper_draw(p2);
+    }
+    return FALSE
 }
 
 void _special_anim_handle(Physics *p) {
@@ -148,6 +154,10 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         fix16 imp_x = fix16Mul(imp_str, norm_x);
         fix16 imp_y = fix16Mul(imp_str, norm_y);
 
+        if (_special_collision_handle(p1, p2)) {
+            return TRUE;
+        }
+
         if (!p1->stationary) {
             p1->dx -= fix16Mul(imp_x, p1->inv_m);
             p1->dy -= fix16Mul(imp_y, p1->inv_m);
@@ -157,8 +167,6 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
             p2->dy += fix16Mul(imp_y, p2->inv_m);
         }
 
-        _special_collision_handle(p1);
-        _special_collision_handle(p2);
 
         return TRUE;
     }
@@ -363,6 +371,7 @@ Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
     p->tile_w = 4;
     p->tile_h = 4;
     p->tile_idx = _BUMPER_TILE;
+    p->pal = PAL3;
     _bumper_draw(p);
 
     p->type = PHYSICS_T_BUMPER;
