@@ -5,6 +5,8 @@ Physics **ALL_PHYSICS = _all_physics;
 
 fix32 _THRESH[][3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
 
+u16 _BUMPER_TILE;
+
 FORCE_INLINE u8 _type_to_thresh_idx(Physics *p) {
     switch (p->type) {
         case PHYSICS_T_TARGET:
@@ -24,6 +26,12 @@ FORCE_INLINE fix32 _thresh(Physics *p1, Physics *p2) {
         _THRESH[_type_to_thresh_idx(p1)][_type_to_thresh_idx(p2)] = ret;
     }
     return ret;
+}
+
+void Physics_engine_init(Game *g) {
+    _BUMPER_TILE = g->next_tile_idx;
+    VDP_loadTileSet(&TLS_BUMPER, _BUMPER_TILE, DMA);
+    g->next_tile_idx += TLS_BUMPER.numTile;
 }
 
 Physics *Physics_init(Game *g) {

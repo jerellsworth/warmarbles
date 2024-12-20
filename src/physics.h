@@ -47,6 +47,8 @@ struct Physics_s {
 
 extern Physics **ALL_PHYSICS;
 
+void Physics_engine_init(Game *g);
+
 Physics *Physics_init(Game *g);
 void Physics_del(Physics *p);
 

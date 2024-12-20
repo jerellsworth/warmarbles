@@ -4,6 +4,7 @@ Board *Board_init(Game *g) {
     Board *b = st_calloc(1, sizeof(Board));
     b->game = g;
     VDP_drawImage(BG_B, &IMG_BOARD, 0, 0);
+    g->next_tile_idx = TILE_USER_INDEX + (IMG_BOARD.tileset)->numTile;
     return b;
 }
 
