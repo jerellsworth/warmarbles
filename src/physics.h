@@ -55,6 +55,8 @@ struct Physics_s {
 
     u16 collided_frames;
     bool broken;
+
+    u8 init_frames;
 };
 
 extern Physics **ALL_PHYSICS;

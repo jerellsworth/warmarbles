@@ -13,19 +13,14 @@ Game *Game_init(void) {
 }
 
 Physics *Game_enter_marble(Game *g) {
-    fix16 x, y, dx, dy;
+    fix16 x, y;
     x = FIX16(160);
     if (random_with_max(1)) {
         y = BOARD_HEIGHT >> 2;
     } else {
         y = BOARD_HEIGHT - (BOARD_HEIGHT >> 2);
     }
-    u16 theta = random_with_max(1023);
-    dx = cosFix16(theta) << 2;
-    dy = sinFix16(theta) << 2;
     Physics *m = Physics_init_marble(x, y, g);
-    m->dx = dx;
-    m->dy = dy;
     return m;
 }
 

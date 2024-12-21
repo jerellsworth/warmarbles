@@ -121,7 +121,7 @@ bool _special_collision_handle(Physics *p1, Physics *p2) {
 
 }
 
-void _special_anim_handle(Physics *p) {
+void _special_phys_handle(Physics *p) {
     // TODO there's a lot of hardcoded garbage here. Refactor
     if (p->type == PHYSICS_T_BUMPER) {
         if (!(p->frames_alive & 7)) {
@@ -142,7 +142,19 @@ void _special_anim_handle(Physics *p) {
             _bumper_draw(p);
         }
     } else if (p->type == PHYSICS_T_MARBLE) {
-        if (p->anim_frames > 0) {
+        if (p->init_frames > 0) {
+            --p->init_frames;
+            if (p->init_frames == 0) {
+                SPR_setAnim(p->sprite, 0);
+                p->has_collision  = TRUE;
+                u16 theta = random_with_max(1023);
+                fix16 dx = cosFix16(theta) << 2;
+                fix16 dy = sinFix16(theta) << 2;
+                p->dx = dx;
+                p->dy = dy;
+            }
+        }
+        else if (p->anim_frames > 0) {
             --p->anim_frames;
             if (p->anim_frames == 0) {
                 SPR_setAnim(p->sprite, 0);
@@ -239,7 +251,7 @@ void _handle_tray(Physics *p, u8 tray_no) {
 void Physics_update(Physics *p) {
     ++p->frames_alive;
 
-    _special_anim_handle(p);
+    _special_phys_handle(p);
 
     if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
 
@@ -362,6 +374,9 @@ Physics *Physics_init_marble(fix16 x, fix16 y, Game *g) {
         fix16ToRoundedInt(y - p->sprite_offset_y),
         TILE_ATTR(PAL1, TRUE, FALSE, FALSE) 
         );
+    p->init_frames = 3 * 4;
+    p->has_collision = FALSE;
+    SPR_setAnim(p->sprite, 2);
     return p;
 }
 
