@@ -1,14 +1,13 @@
 # next
-* animation for marbles being accelerated
-  - color changes to same color as the accelerators
-* collision detection optimization
+* don't put bumpers in the middle of the table
 * animation when marbles are warping in
-* after a few seconds of being still, marbles sitting on board are propelled in a random direction
+* collision detection optimization
 * sounds
 * better AI
 * paint the walls with circuit-ish texture skewed to wall position
 
 # eventually
+* after a few seconds of being still, marbles sitting on board are propelled in a random direction
 
 # bugs
 * need to stop throwing immediately when game ends so we don't write to uninitialized memory
