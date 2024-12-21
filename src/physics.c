@@ -370,8 +370,8 @@ Physics *Physics_init_target(fix16 x, fix16 y, Game *g) {
     if (!p) return NULL;
 
     p->r = FIX16(16);
-    p->m = FIX16(16);
-    p->inv_m = FIX16(0.0625);
+    p->m = FIX16(12);
+    p->inv_m = FIX16(0.083);
 
     p->x = x;
     p->y = y;

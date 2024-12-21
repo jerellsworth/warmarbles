@@ -31,6 +31,7 @@ void Board_most_used_cell(Board *b, u16 *row, u16 *col) {
     u16 max_usage = 0;
     for (u8 r = 0; r < BOARD_HEIGHT_TILES >> 2; ++r) {
         for (u8 c = 0; c < BOARD_WIDTH_TILES >> 2; ++c) {
+            if ((c == 3 || c == 4) && (r >= 2 && r <= 4)) continue;
             Physics *doodad = b->doodads[r][c];
             if (!doodad) {
                 max_usage = max(max_usage, b->traffic[r][c]);
@@ -42,6 +43,10 @@ void Board_most_used_cell(Board *b, u16 *row, u16 *col) {
     u16 cell_no = 0;
     for (u8 r = 0; r < BOARD_HEIGHT_TILES >> 2; ++r) {
         for (u8 c = 0; c < BOARD_WIDTH_TILES >> 2; ++c) {
+            if ((c == 3 || c == 4) && (r >= 2 && r <= 4)) {
+                ++cell_no;
+                continue;
+            }
             u16 usage = b->traffic[r][c];
             Physics *doodad = b->doodads[r][c];
             if (usage == max_usage && (!doodad)) {
@@ -60,9 +65,13 @@ Physics *Board_add_doodad(Board *b, PhysicsType t) {
 
     u16 row, col;
     Board_most_used_cell(b, &row, &col);
+    fix16 x = FIX16((col << 5) + 16 + 24);
+    if (col > 3) x += FIX16(16);
+    fix16 y = FIX16((row << 5) + 16);
+    if (row > 2) y += FIX16(16);
     Physics *doodad = Physics_init_bumper(
-        FIX16((col << 5) + 16 + 24),
-        FIX16((row << 5) + 16),
+        x,
+        y,
         b->game
     );
     b->doodads[row][col] = doodad;
