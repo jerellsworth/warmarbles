@@ -4,7 +4,7 @@
 #include "bh.h"
 
 #define GUY_FRAMES_PER_ANIM 5
-#define GUY_ENGLISH_PER_FRAME FIX16(0.1)
+#define GUY_ENGLISH_PER_FRAME FIX16(0.2)
 
 struct Guy_s {
     Game *game;

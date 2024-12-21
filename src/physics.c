@@ -97,7 +97,7 @@ bool _special_collision_handle(Physics *p1, Physics *p2) {
 
     if (!bumper) return FALSE;
 
-    if ((!bumper->broken) && (bumper->collided_frames > 200)) {
+    if ((!bumper->broken) && (bumper->collided_frames > 160)) {
         bumper->broken = TRUE;
         bumper->pal = PAL1;
         _bumper_draw(bumper);
