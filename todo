@@ -1,10 +1,9 @@
 # next
-* end state
-  - 1st to 10?
-  - looser explodes in green goup
-  - PLAYER 1 WINS in title font as FG layer
+* Game over theme
+* change criteria to 10 games one instead of 2
 * menu
 * production logo (frogseye lense to make it look like it's reflected in a marble)
+* pause
 * sounds
 * better AI
 * paint the walls with circuit-ish texture skewed to wall position

@@ -1,4 +1,6 @@
 IMAGE IMG_BOARD "board.png"
+IMAGE IMG_PLAYER_ONE_WINS "player_one_wins.png"
+IMAGE IMG_PLAYER_TWO_WINS "player_two_wins.png"
 IMAGE IMG_TITLE "title.png"
 PALETTE PAL_BOARD "board.png"
 PALETTE PAL_MARBLE "marble.png"

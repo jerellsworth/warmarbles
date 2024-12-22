@@ -16,13 +16,17 @@ void Board_reset(Board *b) {
     }
 }
 
-void Board_del(Board *b) {
+void Board_clear_doodads(Board *b) {
     for (u8 r = 0; r < BOARD_HEIGHT_TILES >> 2; ++r) {
         for (u8 c = 0; c < BOARD_HEIGHT_TILES >> 2; ++c) {
             Physics *p = b->doodads[r][c];
             if (p) Physics_del(p);
         }
     }
+}
+
+void Board_del(Board *b) {
+    Board_clear_doodads(b);
     free(b);
 }
 

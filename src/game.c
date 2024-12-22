@@ -43,6 +43,8 @@ void Game_run(Game *g) {
     g->guy2 = Guy_init(FIX16(320 - 32), 0, TRUE, g);
     Player *p1 = Player_init(g, g->guy1, JOY_1, 0);
     Player *p2 = Player_init(g, g->guy2, 0, 1);
+    u8 winning_player;
+    Guy *losing_guy;
     Board_reset(b);
     u16 rounds_to_bumper = 1;
     while (TRUE) {
@@ -69,18 +71,54 @@ void Game_run(Game *g) {
         }
         Physics_del_type(PHYSICS_T_MARBLE);
         Physics_del(target);
+
+        if (g->p1_score >= GAME_WINNING_SCORE) {
+            winning_player = 0;
+            losing_guy = g->guy2;
+            break;
+        } else if (g->p2_score >= GAME_WINNING_SCORE) {
+            winning_player = 1;
+            losing_guy = g->guy1;
+            break;
+        }
+
         --rounds_to_bumper;
         if (rounds_to_bumper == 0) {
             rounds_to_bumper = 3;
             Board_add_doodad(b, PHYSICS_T_BUMPER);
         }
     }
+    Board_clear_doodads(b);
+    XGM_stopPlay();
+    VDP_drawImageEx(
+        BG_A,
+        winning_player == 0 ? &IMG_PLAYER_ONE_WINS : &IMG_PLAYER_TWO_WINS,
+        TILE_ATTR_FULL(PAL0, TRUE, FALSE, FALSE, g->next_tile_idx),
+        0,
+        0,
+        FALSE,
+        TRUE
+    );
+    SPR_setAnim(losing_guy->sprite, 3);
+    u16 end_game_frames = 0;
+    while (TRUE) {
+        ++end_game_frames;
+        if (end_game_frames >= 5 * 10) {
+            SPR_setVisibility(losing_guy->sprite, HIDDEN);
+        }
+        if (JOY_readJoypad(JOY_ALL) & BUTTON_START) break;
+        
+        SPR_update();
+        SYS_doVBlankProcess();
+    }
+
     Player_del(p1);
     Player_del(p2);
     Board_del(b);
 }
 
 void Game_del(Game *g) {
+    VDP_init();
     free(g);
 }
 

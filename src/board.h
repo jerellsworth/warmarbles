@@ -21,5 +21,6 @@ void Board_del(Board *b);
 
 void Board_most_used_cell(Board *b, u16 *row, u16 *col);
 Physics *Board_add_doodad(Board *b, PhysicsType t);
+void Board_clear_doodads(Board *b);
 
 #endif
