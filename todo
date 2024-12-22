@@ -2,13 +2,14 @@
 * end state
   - 1st to 10?
   - looser explodes in green goup
+  - PLAYER 1 WINS in title font as FG layer
 * menu
 * production logo (frogseye lense to make it look like it's reflected in a marble)
-* collision detection optimization
 * sounds
 * better AI
 * paint the walls with circuit-ish texture skewed to wall position
 * palette fade on title screen from yellow to red to make title glow
+* collision detection optimization
 
 # eventually
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
