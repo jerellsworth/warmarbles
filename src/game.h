@@ -3,7 +3,7 @@
 
 #include "bh.h"
 
-#define GAME_N_MARBLES 4
+#define GAME_N_MARBLES 5
 
 enum GameState_e {
     GAME_STATE_IN_PROGRESS,

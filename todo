@@ -1,10 +1,10 @@
 # next
-* targets appear less often than every point. Maybe every 3
+* title screen & end state
+  - 1st to 10?
 * collision detection optimization
 * sounds
 * better AI
 * paint the walls with circuit-ish texture skewed to wall position
-* title screen & end state
 
 # eventually
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction

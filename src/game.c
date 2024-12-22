@@ -44,6 +44,7 @@ void Game_run(Game *g) {
     Player *p1 = Player_init(g, g->guy1, JOY_1, 0);
     Player *p2 = Player_init(g, g->guy2, 0, 1);
     Board_reset(b);
+    u16 rounds_to_bumper = 1;
     while (TRUE) {
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
         g->marbles_in_tray[0] = 0;
@@ -68,7 +69,11 @@ void Game_run(Game *g) {
         }
         Physics_del_type(PHYSICS_T_MARBLE);
         Physics_del(target);
-        Board_add_doodad(b, PHYSICS_T_BUMPER);
+        --rounds_to_bumper;
+        if (rounds_to_bumper == 0) {
+            rounds_to_bumper = 3;
+            Board_add_doodad(b, PHYSICS_T_BUMPER);
+        }
     }
     Player_del(p1);
     Player_del(p2);
