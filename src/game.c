@@ -45,9 +45,7 @@ void Game_run(Game *g) {
     Player *p2 = Player_init(g, g->guy2, 0, 1);
     Board_reset(b);
     while (TRUE) {
-        Physics *marbles[GAME_N_MARBLES];
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
-        u8 n_marbles = 0;
         g->marbles_in_tray[0] = 0;
         g->marbles_in_tray[1] = 0;
         u8 frames_to_marble = 60;
@@ -56,9 +54,8 @@ void Game_run(Game *g) {
             --frames_to_marble;
             if (frames_to_marble == 0) {
                 frames_to_marble = 60;
-                if (n_marbles < GAME_N_MARBLES) {
-                    marbles[n_marbles] = Game_enter_marble(g);
-                    ++n_marbles;
+                if (Physics_count_type(PHYSICS_T_MARBLE) < GAME_N_MARBLES) {
+                    Game_enter_marble(g);
                 }
             }
             Player_update(p1);
@@ -69,9 +66,7 @@ void Game_run(Game *g) {
             SPR_update();
             SYS_doVBlankProcess();
         }
-        for (u8 i = 0; i < n_marbles; ++i) {
-            Physics_del(marbles[i]);
-        }
+        Physics_del_type(PHYSICS_T_MARBLE);
         Physics_del(target);
         Board_add_doodad(b, PHYSICS_T_BUMPER);
     }

@@ -121,7 +121,7 @@ bool _special_collision_handle(Physics *p1, Physics *p2) {
 
 }
 
-void _special_phys_handle(Physics *p) {
+bool _special_phys_handle(Physics *p) {
     // TODO there's a lot of hardcoded garbage here. Refactor
     if (p->type == PHYSICS_T_BUMPER) {
         if (!(p->frames_alive & 7)) {
@@ -152,15 +152,32 @@ void _special_phys_handle(Physics *p) {
                 fix16 dy = sinFix16(theta) << 2;
                 p->dx = dx;
                 p->dy = dy;
+                return FALSE;
             }
         }
-        else if (p->anim_frames > 0) {
+        if (p->anim_frames > 0) {
             --p->anim_frames;
             if (p->anim_frames == 0) {
                 SPR_setAnim(p->sprite, 0);
             }
         }
+        /*
+        TODO despawn stuck marbles
+        if ((!p->broken) && p->dx == 0 && p->dy == 0) {
+            p->broken = TRUE;
+            p->has_collision = FALSE;
+            SPR_setAnim(p->sprite, 3);
+            p->anim_frame = 3 * 3;
+        } else if (p->broken && p->anim_frames > 0) {
+            --p->anim_frames;
+            if (p->anim_frames == 0) {
+                Physics_del(p);
+                return TRUE;
+            }
+        }
+        */
     }
+    return FALSE;
 }
 
 bool Physics_check_collision(Physics *p1, Physics *p2) {
@@ -251,7 +268,7 @@ void _handle_tray(Physics *p, u8 tray_no) {
 void Physics_update(Physics *p) {
     ++p->frames_alive;
 
-    _special_phys_handle(p);
+    if (_special_phys_handle(p)) return;
 
     if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
 
@@ -441,4 +458,22 @@ Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t) {
         }
     }
     return NULL;
+}
+
+u8 Physics_count_type(PhysicsType t) {
+    u8 ret = 0;
+    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
+        Physics *pi = ALL_PHYSICS[i];
+        if (pi && pi->type == t) ++ret;
+    }
+    return ret;
+}
+
+void Physics_del_type(PhysicsType t) {
+    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
+        Physics *pi = ALL_PHYSICS[i];
+        if (pi && pi->type == t) {
+            Physics_del(pi); 
+        }
+    }
 }

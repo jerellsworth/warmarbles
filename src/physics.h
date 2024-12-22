@@ -76,4 +76,7 @@ Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g);
 
 Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t);
 
+u8 Physics_count_type(PhysicsType t);
+void Physics_del_type(PhysicsType t);
+
 #endif
