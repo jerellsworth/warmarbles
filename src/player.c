@@ -32,10 +32,6 @@ void _ai(Player *p) {
 void Player_update(Player *p) {
     if (p->ai) return _ai(p);
     u16 joy = JOY_readJoypad(p->joy);
-    if (joy & BUTTON_START) {
-        // TODO dbg
-        p->game->state = GAME_STATE_END_OF_ROUND;
-    }
     fix16 dx, dy;
     if (joy & BUTTON_UP) {
         dy = -FIX16(4);
