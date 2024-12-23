@@ -180,6 +180,44 @@ bool _special_phys_handle(Physics *p) {
     return FALSE;
 }
 
+void _collision_sfx(Physics *p1, Physics *p2) {
+    Physics *pi, *pj;
+    if (p1->type <= p2->type) {
+        pi = p1;
+        pj = p2;
+    } else {
+        pi = p2;
+        pj = p1;
+    }
+    u8 sample = 0;
+    switch (pi->type) {
+        case PHYSICS_T_MARBLE:
+            switch (pj->type) {
+                case PHYSICS_T_MARBLE:
+                    sample = SND_SAMPLE_COL_MARBLE_MARBLE;   
+                    break;
+                case PHYSICS_T_TARGET:
+                    sample = SND_SAMPLE_COL_MARBLE_TARGET;    
+                    break;
+                case PHYSICS_T_BUMPER:
+                    if (pj->broken) {
+                        if (pj->anim_frames == 0) {
+                            sample = SND_SAMPLE_COL_MARBLE_ACCEL;
+                        }
+                    } else {
+                        sample = SND_SAMPLE_COL_MARBLE_BUMPER;    
+                    }
+                    break;
+            }
+            break;
+        case PHYSICS_T_TARGET:
+        case PHYSICS_T_BUMPER:
+        default:
+            break;
+    }
+    if (sample > 0) SFX_incidental(p1->game->sfx, sample);
+}
+
 bool Physics_check_collision(Physics *p1, Physics *p2) {
     if (p1->stationary && p2->stationary) return FALSE;
     fix16 p1_next_x = p1->x + p1->dx;
@@ -218,6 +256,7 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         fix16 imp_x = fix16Mul(imp_str, norm_x);
         fix16 imp_y = fix16Mul(imp_str, norm_y);
 
+        _collision_sfx(p1, p2);
         if (_special_collision_handle(p1, p2)) {
             return TRUE;
         }

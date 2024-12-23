@@ -91,6 +91,7 @@ void Guy_update(Guy *g) {
         } else if (g->throw_frames == GUY_FRAMES_PER_ANIM * (10 - 5)) {
             g->holding->dx = g->throw_dx;
             g->holding->dy = g->throw_dy;
+            SFX_incidental(g->game->sfx, SND_SAMPLE_THROW);
             g->holding = NULL;
         } else if (g->throw_frames == 0) {
             SPR_setAnim(g->sprite, 0);

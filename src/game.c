@@ -26,6 +26,7 @@ Physics *Game_enter_marble(Game *g) {
 }
 
 void Game_score(Game *g, u8 player) {
+    SFX_incidental(g->sfx, SND_SAMPLE_SCORE);
     if (player == 0) {
         ++g->p1_score;
     } else {
