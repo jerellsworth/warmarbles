@@ -6,6 +6,7 @@ PALETTE PAL_BOARD "board.png"
 PALETTE PAL_MARBLE "marble.png"
 PALETTE PAL_GUY "guy2.png"
 PALETTE PAL_TARGET "target.png"
+SPRITE SPR_CURSOR "cursor.png" 1 1
 SPRITE SPR_MARBLE "marble.png" 2 2 -1 3
 SPRITE SPR_GUY "guy.png" 4 9 -1 5
 SPRITE SPR_GUY2 "guy2.png" 4 9 -1 5

@@ -12,6 +12,9 @@ typedef struct Game_s Game;
 typedef struct Physics_s Physics;
 typedef struct Player_s Player;
 typedef struct Guy_s Guy;
+typedef struct Menu_Item_s Menu_Item;
+typedef struct Menu_s Menu;
+typedef int (*Menu_Select_CB)(Menu_Item *);
 
 #include "resources.h"
 
@@ -20,6 +23,7 @@ typedef struct Guy_s Guy;
 #include "physics.h"
 #include "player.h"
 #include "guy.h"
+#include "menu.h"
 #include "utils.h"
 
 #endif

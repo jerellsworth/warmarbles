@@ -20,9 +20,10 @@ struct Game_s {
     u8 marbles_in_tray[2];
     Board *board;
     u16 next_tile_idx;
+    u8 n_players;
 };
 
-Game *Game_init(void);
+Game *Game_init(u8 n_players);
 void Game_run(Game *g);
 void Game_del(Game *g);
 void Game_draw_score(Game *g);

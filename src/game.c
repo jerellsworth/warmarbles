@@ -1,9 +1,9 @@
 #include "bh.h"
 
-Game *Game_init(void) {
+Game *Game_init(u8 n_players) {
     Game *g = st_calloc(1, sizeof(Game));
+    g->n_players = n_players;
     SPR_init();
-    VDP_loadFont(&TLS_FONT, DMA);
     VDP_setTextPalette(PAL1);
     PAL_setPalette(PAL1, PAL_MARBLE.data, DMA);
     PAL_setPalette(PAL2, PAL_GUY.data, DMA);
@@ -42,7 +42,12 @@ void Game_run(Game *g) {
     g->guy1 = Guy_init(0, 0, FALSE, g);
     g->guy2 = Guy_init(FIX16(320 - 32), 0, TRUE, g);
     Player *p1 = Player_init(g, g->guy1, JOY_1, 0);
-    Player *p2 = Player_init(g, g->guy2, 0, 1);
+    Player *p2 = Player_init(
+        g,
+        g->guy2,
+        g->n_players > 1 ? JOY_2 : 0,
+        g->n_players > 1 ? 0 : 1
+        );
     u8 winning_player;
     Guy *losing_guy;
     Board_reset(b);

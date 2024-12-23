@@ -1,5 +1,4 @@
 # next
-* menu
 * production logo (frogseye lense to make it look like it's reflected in a marble)
 * pause
 * sounds
@@ -16,3 +15,4 @@
 * need to stop throwing immediately when game ends so we don't write to uninitialized memory
 * marble getting stuck in target
 * holding left lets you throw the marble off screen
+* board clear doodads missing last doodad
