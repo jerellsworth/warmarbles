@@ -1,8 +1,9 @@
 #include "bh.h"
 
-Game *Game_init(u8 n_players) {
+Game *Game_init(u8 n_players, SFX *sfx) {
     Game *g = st_calloc(1, sizeof(Game));
     g->n_players = n_players;
+    g->sfx = sfx;
     SPR_init();
     VDP_setTextPalette(PAL1);
     PAL_setPalette(PAL1, PAL_MARBLE.data, DMA);

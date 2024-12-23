@@ -21,9 +21,10 @@ struct Game_s {
     Board *board;
     u16 next_tile_idx;
     u8 n_players;
+    SFX *sfx;
 };
 
-Game *Game_init(u8 n_players);
+Game *Game_init(u8 n_players, SFX *sfx);
 void Game_run(Game *g);
 void Game_del(Game *g);
 void Game_draw_score(Game *g);

@@ -37,11 +37,14 @@ int main(bool hard_reset) {
     if (!hard_reset) SYS_hardReset();
     u8 players;
     VDP_loadFont(&TLS_FONT, DMA);
+    SFX *sfx = SFX_init();
     title(&players);
+    SFX_incidental(sfx, SND_SAMPLE_CONFIRM);
     while (TRUE) {
-        Game *g = Game_init(players);
+        Game *g = Game_init(players, sfx);
         Game_run(g);
         Game_del(g);
     }
+    SFX_del(sfx);
 	return 0;
 }

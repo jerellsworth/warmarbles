@@ -22,8 +22,8 @@ void SFX_del(SFX *s) {
 
 void SFX_incidental(SFX *s, u8 sample) {
     XGM_startPlayPCM(sample, 14, s->next_channel);
-    if (s->next_channel == SOUND_PCM_4) {
-        s->next_channel = SOUND_PCM_1;
+    if (s->next_channel == SOUND_PCM_CH4) {
+        s->next_channel = SOUND_PCM_CH1;
         return;
     }
     ++s->next_channel;

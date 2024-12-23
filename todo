@@ -11,6 +11,7 @@
   - target-bumper collision (maybe)
   - marble-accelerator collision - 
   - target-accelerator collision (maybe)
+  - marble enters
 
   - need to cycle through all 4 channels automatically
   - make music quiter

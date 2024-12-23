@@ -12,11 +12,11 @@
 #define SND_SAMPLE_COL_MARBLE_ACCEL 70
 
 struct SFX_s {
-    SoundPCMChannel next_channel;
+    u8 next_channel;
 };
 
 SFX *SFX_init(void);
 void SFX_del(SFX *s);
-void SFX_incidental(SFX *s);
+void SFX_incidental(SFX *s, u8 sample);
 
 #endif
