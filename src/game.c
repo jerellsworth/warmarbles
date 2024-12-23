@@ -89,7 +89,7 @@ void Game_run(Game *g) {
         }
     }
     Board_clear_doodads(b);
-    XGM_stopPlay();
+    XGM_startPlay(XGM_ending_sting);
     VDP_drawImageEx(
         BG_A,
         winning_player == 0 ? &IMG_PLAYER_ONE_WINS : &IMG_PLAYER_TWO_WINS,

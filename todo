@@ -1,11 +1,10 @@
 # next
-* Game over theme
-* change criteria to 10 games one instead of 2
 * menu
 * production logo (frogseye lense to make it look like it's reflected in a marble)
 * pause
 * sounds
 * better AI
+* change criteria to 10 games one instead of 2
 * paint the walls with circuit-ish texture skewed to wall position
 * palette fade on title screen from yellow to red to make title glow
 * collision detection optimization

@@ -13,4 +13,5 @@ SPRITE SPR_TARGET "target.png" 4 4 -1 4
 TILESET TLS_BUMPER "bumper.png" 0 0
 TILESET TLS_FONT "Torment.png" 0 0
 XGM XGM_battle "battle_2.vgm"
+XGM XGM_ending_sting "ending_sting.vgm"
 XGM XGM_theme "war_marbles_theme.vgm"
