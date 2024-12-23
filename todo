@@ -7,9 +7,9 @@
   - Score-
   - marble-marble collision-
   - marble-bumper collision-
-  - marble-target collision
-  - target-bumper collision
-  - marble-accelerator collision
+  - marble-target collision -
+  - target-bumper collision (maybe)
+  - marble-accelerator collision - 
   - target-accelerator collision (maybe)
 
   - need to cycle through all 4 channels automatically

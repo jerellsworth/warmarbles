@@ -24,6 +24,7 @@ typedef int (*Menu_Select_CB)(Menu_Item *);
 #include "player.h"
 #include "guy.h"
 #include "menu.h"
+#include "sfx.h"
 #include "utils.h"
 
 #endif

@@ -16,3 +16,10 @@ TILESET TLS_FONT "Torment.png" 0 0
 XGM XGM_battle "battle_2.vgm"
 XGM XGM_ending_sting "ending_sting.vgm"
 XGM XGM_theme "war_marbles_theme.vgm"
+WAV WAV_CONFIRM "confirm.wav" XGM
+WAV WAV_THROW "throw.wav" XGM
+WAV WAV_SCORE "score.wav" XGM
+WAV WAV_COL_MARBLE_MARBLE "col_marble_marble.wav" XGM
+WAV WAV_COL_MARBLE_BUMPER "col_marble_bumper.wav" XGM
+WAV WAV_COL_MARBLE_TARGET "col_marble_target.wav" XGM
+WAV WAV_COL_MARBLE_ACCEL "col_marble_accel.wav" XGM
