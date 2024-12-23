@@ -23,3 +23,4 @@ WAV WAV_COL_MARBLE_MARBLE "col_marble_marble.wav" XGM
 WAV WAV_COL_MARBLE_BUMPER "col_marble_bumper.wav" XGM
 WAV WAV_COL_MARBLE_TARGET "col_marble_target.wav" XGM
 WAV WAV_COL_MARBLE_ACCEL "col_marble_accel.wav" XGM
+WAV WAV_MARBLE_ENTER "marble_enter.wav" XGM

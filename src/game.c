@@ -14,6 +14,7 @@ Game *Game_init(u8 n_players, SFX *sfx) {
 }
 
 Physics *Game_enter_marble(Game *g) {
+    SFX_incidental(g->sfx, SND_SAMPLE_MARBLE_ENTER);
     fix16 x, y;
     x = FIX16(160);
     if (random_with_max(1)) {
