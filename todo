@@ -5,7 +5,6 @@
 * palette fade on title screen from yellow to red to make title glow
 * fadeouts/fadeins
 * collision detection optimization
-* different confirm sound
 
 # eventually
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction

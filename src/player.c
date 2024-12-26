@@ -38,10 +38,10 @@ void Player_update(Player *p) {
         if (p->game->state == GAME_STATE_IN_PROGRESS) {
             SFX_incidental(p->game->sfx, SND_SAMPLE_CONFIRM);
             p->game->state = GAME_STATE_PAUSED;
-            p->cooldown = 60;
+            p->cooldown = 30;
         } else if (p->game->state == GAME_STATE_PAUSED) {
             SFX_incidental(p->game->sfx, SND_SAMPLE_CONFIRM);
-            p->cooldown = 60;
+            p->cooldown = 30;
             p->game->state = GAME_STATE_IN_PROGRESS;
         }
     }

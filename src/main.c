@@ -45,7 +45,6 @@ int main(bool hard_reset) {
     VDP_loadFont(&TLS_FONT, DMA);
     SFX *sfx = SFX_init();
     title(&players);
-    SFX_incidental(sfx, SND_SAMPLE_CONFIRM);
     while (TRUE) {
         Game *g = Game_init(players, sfx);
         Game_run(g);
