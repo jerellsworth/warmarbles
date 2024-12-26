@@ -1,19 +1,7 @@
 # next
 * production logo (frogseye lense to make it look like it's reflected in a marble)
 * pause
-* sounds
-  - Confirm/pause-
-  - Throw-
-  - Score-
-  - marble-marble collision-
-  - marble-bumper collision-
-  - marble-target collision -
-  - target-bumper collision (maybe)
-  - marble-accelerator collision - 
-  - target-accelerator collision (maybe)
-  - marble enters
-
-  - make music quiter
+* make music quiter
 * better AI
 * change criteria to 10 games one instead of 2
 * paint the walls with circuit-ish texture skewed to wall position
