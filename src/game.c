@@ -81,6 +81,8 @@ void Game_run(Game *g) {
             }
             SYS_doVBlankProcess();
         }
+        Guy_throw_cancel(g->guy1);
+        Guy_throw_cancel(g->guy2);
         Physics_del_type(PHYSICS_T_MARBLE);
         Physics_del(target);
 

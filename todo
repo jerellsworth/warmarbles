@@ -12,7 +12,6 @@
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
 
 # bugs
-* need to stop throwing immediately when game ends so we don't write to uninitialized memory
 * marble getting stuck in target
 * holding left lets you throw the marble off screen
 * board clear doodads missing last doodad

@@ -98,3 +98,14 @@ void Guy_update(Guy *g) {
         }
     }
 }
+
+void Guy_throw_cancel(Guy *g) {
+    if (g->holding) {
+        g->holding->has_collision = TRUE;
+        g->holding->dx = 0;
+        g->holding->dy = 0;
+        g->holding = NULL;
+    }
+    g->throw_frames = 0;
+    SPR_setAnim(g->sprite, 0);
+}

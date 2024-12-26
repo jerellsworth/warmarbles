@@ -28,5 +28,6 @@ void Guy_del(Guy *t);
 void Guy_move(Guy *t, fix16 dx, fix16 dy);
 void Guy_throw(Guy *t);
 void Guy_update(Guy *t);
+void Guy_throw_cancel(Guy *g);
 
 #endif
