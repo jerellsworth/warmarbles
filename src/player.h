@@ -12,6 +12,7 @@ struct Player_s {
 
     fix16 ai_dy;
     u16 ai_frames_alive;
+    u16 ai_frames_next_choice;
 };
 
 Player *Player_init(Game *g, Guy *guy, u8 joy, u8 ai);

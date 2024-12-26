@@ -15,6 +15,7 @@ enum GameState_e {
 struct Game_s {
     Guy *guy1;
     Guy *guy2;
+    Physics *target;
     u8 p1_score;
     u8 p2_score;
     GameState state;

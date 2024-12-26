@@ -58,7 +58,7 @@ void Game_run(Game *g) {
     while (TRUE) {
         p1->cooldown = 60;
         p2->cooldown = 60;
-        Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
+        g->target = Physics_init_target(FIX16(160), FIX16(112), g);
         g->marbles_in_tray[0] = 0;
         g->marbles_in_tray[1] = 0;
         u8 frames_to_marble = 60;
@@ -84,7 +84,7 @@ void Game_run(Game *g) {
         Guy_throw_cancel(g->guy1);
         Guy_throw_cancel(g->guy2);
         Physics_del_type(PHYSICS_T_MARBLE);
-        Physics_del(target);
+        Physics_del(g->target);
 
         if (g->p1_score >= GAME_WINNING_SCORE) {
             winning_player = 0;
