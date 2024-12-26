@@ -6,7 +6,6 @@
 * fadeouts/fadeins
 * collision detection optimization
 * different confirm sound
-* different col_marble_target sound
 
 # eventually
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
