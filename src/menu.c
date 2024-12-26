@@ -99,6 +99,9 @@ void Menu_run(Menu *m) {
     m->completed = FALSE;
     Menu_draw(m);
     Menu_refresh_cursor(m);
+    for (u16 i = 0; i < 60; ++i) {
+        SYS_doVBlankProcess();
+    }
     while (!m->completed) {
         random();
         Menu_input(m);

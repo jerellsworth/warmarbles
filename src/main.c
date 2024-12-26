@@ -14,9 +14,15 @@ int _go_to_go_cb(Menu_Item *mi) {
 }
 
 void title(u8 *players) {
-    VDP_drawImage(BG_B, &IMG_TITLE, 0, 0);
+    VDP_drawImage(BG_B, &IMG_PRODUCTION, 0, 0);
     XGM_startPlay(XGM_theme);
+    for (u16 i = 0; i < 300; ++i) {
+        if (JOY_readJoypad(JOY_ALL) & BUTTON_START) break;
+        SYS_doVBlankProcess();
+    }
+
     PAL_setPalette(PAL1, PAL_MARBLE.data, DMA);
+    VDP_drawImage(BG_B, &IMG_TITLE, 0, 0);
     Menu *m = Menu_new(15, 21);
 
     Menu_Item *mi_players = Menu_add_item(m, "Players:");
