@@ -18,9 +18,12 @@ void Board_reset(Board *b) {
 
 void Board_clear_doodads(Board *b) {
     for (u8 r = 0; r < BOARD_HEIGHT_TILES >> 2; ++r) {
-        for (u8 c = 0; c < BOARD_HEIGHT_TILES >> 2; ++c) {
+        for (u8 c = 0; c < BOARD_WIDTH_TILES >> 2; ++c) {
             Physics *p = b->doodads[r][c];
-            if (p) Physics_del(p);
+            if (p) {
+                Physics_del(p);
+                b->doodads[r][c] = NULL;
+            }
         }
     }
 }
@@ -42,7 +45,7 @@ void Board_most_used_cell(Board *b, u16 *row, u16 *col) {
             }
         }
     }
-    u16 candidates[BOARD_HEIGHT_TILES * BOARD_WIDTH_TILES >> 4];
+    u16 candidates[(BOARD_HEIGHT_TILES * BOARD_WIDTH_TILES) >> 4];
     u16 n_candidates = 0;
     u16 cell_no = 0;
     for (u8 r = 0; r < BOARD_HEIGHT_TILES >> 2; ++r) {
