@@ -16,6 +16,7 @@ void Player_del(Player *p) {
 }
 
 void _ai(Player *p) {
+    if (p->game->state == GAME_STATE_PAUSED) return;
     ++p->ai_frames_alive;
     Guy *g = p->guy;
     if (g->y <= -FIX16(40)) {
@@ -38,13 +39,13 @@ void Player_update(Player *p) {
             SFX_incidental(p->game->sfx, SND_SAMPLE_CONFIRM);
             p->game->state = GAME_STATE_PAUSED;
             p->cooldown = 60;
-            return;
         } else if (p->game->state == GAME_STATE_PAUSED) {
             SFX_incidental(p->game->sfx, SND_SAMPLE_CONFIRM);
             p->cooldown = 60;
             p->game->state = GAME_STATE_IN_PROGRESS;
         }
     }
+    if (p->game->state == GAME_STATE_PAUSED) return;
 
     fix16 dx, dy;
     if (joy & BUTTON_UP) {

@@ -56,25 +56,29 @@ void Game_run(Game *g) {
     Board_reset(b);
     u16 rounds_to_bumper = 1;
     while (TRUE) {
+        p1->cooldown = 60;
+        p2->cooldown = 60;
         Physics *target = Physics_init_target(FIX16(160), FIX16(112), g);
         g->marbles_in_tray[0] = 0;
         g->marbles_in_tray[1] = 0;
         u8 frames_to_marble = 60;
         g->state = GAME_STATE_IN_PROGRESS;
         while (g->state != GAME_STATE_END_OF_ROUND) {
-            --frames_to_marble;
-            if (frames_to_marble == 0) {
-                frames_to_marble = 60;
-                if (Physics_count_type(PHYSICS_T_MARBLE) < GAME_N_MARBLES) {
-                    Game_enter_marble(g);
-                }
-            }
             Player_update(p1);
             Player_update(p2);
-            Guy_update(g->guy1);
-            Guy_update(g->guy2);
-            Physics_update_all();
-            SPR_update();
+            if (g->state == GAME_STATE_IN_PROGRESS) {
+                --frames_to_marble;
+                if (frames_to_marble == 0) {
+                    frames_to_marble = 60;
+                    if (Physics_count_type(PHYSICS_T_MARBLE) < GAME_N_MARBLES) {
+                        Game_enter_marble(g);
+                    }
+                }
+                Guy_update(g->guy1);
+                Guy_update(g->guy2);
+                Physics_update_all();
+                SPR_update();
+            }
             SYS_doVBlankProcess();
         }
         Physics_del_type(PHYSICS_T_MARBLE);
