@@ -33,8 +33,8 @@ void Guy_del(Guy *t) {
 void Guy_move(Guy *g, fix16 dx, fix16 dy) {
     if (dx == 0 && dy == 0) return;
     if (g->throw_frames > 0) {
-        if (dx > 0) g->throw_dx += GUY_ENGLISH_PER_FRAME;
-        else if (dx < 0) g->throw_dx -= GUY_ENGLISH_PER_FRAME;
+        if (dx > 0 && (!g->reversed)) g->throw_dx += GUY_ENGLISH_PER_FRAME;
+        else if (dx < 0 && g->reversed) g->throw_dx -= GUY_ENGLISH_PER_FRAME;
         if (dy > 0) g->throw_dy += GUY_ENGLISH_PER_FRAME;
         if (dy < 0) g->throw_dy -= GUY_ENGLISH_PER_FRAME;
         return;
