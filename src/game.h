@@ -8,6 +8,7 @@
 
 enum GameState_e {
     GAME_STATE_IN_PROGRESS,
+    GAME_STATE_PAUSED,
     GAME_STATE_END_OF_ROUND
 };
 

@@ -61,7 +61,7 @@ void Game_run(Game *g) {
         g->marbles_in_tray[1] = 0;
         u8 frames_to_marble = 60;
         g->state = GAME_STATE_IN_PROGRESS;
-        while (g->state == GAME_STATE_IN_PROGRESS) {
+        while (g->state != GAME_STATE_END_OF_ROUND) {
             --frames_to_marble;
             if (frames_to_marble == 0) {
                 frames_to_marble = 60;

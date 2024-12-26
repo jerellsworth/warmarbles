@@ -4,6 +4,7 @@
 #include "bh.h"
 
 struct Player_s {
+    u8 cooldown;
     Game *game;
     Guy *guy;
     u8 joy;
