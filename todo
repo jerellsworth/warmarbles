@@ -1,5 +1,4 @@
 # next
-* paint the walls with circuit-ish texture skewed to wall position
 * palette fade on title screen from yellow to red to make title glow
 * fadeouts/fadeins
 * collision detection optimization

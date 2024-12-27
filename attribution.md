@@ -9,6 +9,7 @@
 
 # Images
 * Colloseum photo by Kasturi Roy https://unsplash.com/photos/amphitheater-during-daytime-wy6u3oCDESU
+* Circuitry pattern derived (heavily edited) from "Motorola 68000 die" by Pauli Rautakorpi (https://commons.wikimedia.org/wiki/File:Motorola_68000_die.JPG) CC attribution 3 unported license (https://creativecommons.org/licenses/by/3.0/deed.en). 
 
 # Sounds
 * https://sfxr.me
