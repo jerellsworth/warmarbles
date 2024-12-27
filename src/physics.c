@@ -278,11 +278,34 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         }
 
         if (stationary) {
+            // https://datascience.netlify.app/general/2018/11/11/data_science_32.html
             fix16 norm_x, norm_y;
             dx = mobile->x - stationary->x;
             dy = mobile->y - stationary->y;
-            normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
-            s16 theta = arcsin(norm_y);
+            fix16 m = fix16Div(dy, dx);
+            fix16 m_sq = fix16Mul(m, m);
+            fix16 coef = fix16Div(FIX16(1), 1 + m_sq);
+            fix16 dx_new = fix16Mul(
+                fix16Mul(
+                    FIX16(1) - m_sq,
+                    dx
+                )
+                + fix16Mul(
+                    m << 1,
+                    dy
+                ),
+                coef);
+            fix16 dy_new = fix16Mul(
+                fix16Mul(
+                    m << 1,
+                    dx
+                )
+                + fix16Mul(
+                    m_sq - FIX16(1),
+                    dy
+                ),
+                coef);
+
             // TODO here
 
         } else {
