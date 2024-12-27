@@ -1,5 +1,5 @@
 # next
-* remove accelerator collision sfx
+* remove accelerator collision sfx (done?)
 * fadeouts/fadeins
 * collision detection optimization
 * change criteria to 10 games one instead of 2
