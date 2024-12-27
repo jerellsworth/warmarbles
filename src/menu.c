@@ -99,9 +99,6 @@ void Menu_run(Menu *m) {
     m->completed = FALSE;
     Menu_draw(m);
     Menu_refresh_cursor(m);
-    for (u16 i = 0; i < 30; ++i) {
-        SYS_doVBlankProcess();
-    }
     u16 title_fade_frames = 60;
     u16 frames_to_fade = title_fade_frames;
     const Palette *pal_tgt = &PAL_TITLE_2;
@@ -125,6 +122,7 @@ void Menu_run(Menu *m) {
         SYS_doVBlankProcess();
     }
     PAL_interruptFade();
+    PAL_fadeOutAll(30, FALSE);
 
     Menu_hide(m);
 }

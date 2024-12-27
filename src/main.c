@@ -14,15 +14,28 @@ int _go_to_go_cb(Menu_Item *mi) {
 }
 
 void title(u8 *players) {
-    VDP_drawImage(BG_B, &IMG_PRODUCTION, 0, 0);
     XGM_startPlay(XGM_theme);
+    VDP_drawImage(BG_B, &IMG_PRODUCTION, 0, 0);
+    agg_and_fade_in_all(
+        PAL_PRODUCTION.data,
+        NULL,
+        NULL,
+        NULL,
+        30);
     for (u16 i = 0; i < 300; ++i) {
         if (JOY_readJoypad(JOY_ALL) & BUTTON_START) break;
         SYS_doVBlankProcess();
     }
+    PAL_fadeOutAll(30, FALSE);
 
-    PAL_setPalette(PAL1, PAL_MARBLE.data, DMA);
     VDP_drawImage(BG_B, &IMG_TITLE, 0, 0);
+    agg_and_fade_in_all(
+        PAL_TITLE_1.data,
+        PAL_MARBLE.data,
+        NULL,
+        NULL,
+        30);
+
     Menu *m = Menu_new(15, 21);
 
     Menu_Item *mi_players = Menu_add_item(m, "Players:");
