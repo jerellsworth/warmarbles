@@ -102,11 +102,26 @@ void Menu_run(Menu *m) {
     for (u16 i = 0; i < 30; ++i) {
         SYS_doVBlankProcess();
     }
+    u16 title_fade_frames = 30;
+    u16 frames_to_fade = title_fade_frames;
+    const Palette *pal_tgt = &PAL_TITLE_2;
     while (!m->completed) {
         random();
         Menu_input(m);
-        SPR_update();
 
+        --frames_to_fade;
+        if (frames_to_fade == 0) {
+            if (pal_tgt == &PAL_TITLE_2) {
+                PAL_fade(0, 15, PAL_TITLE_1.data, PAL_TITLE_2.data, title_fade_frames, TRUE);
+                pal_tgt = &PAL_TITLE_1;
+            } else {
+                PAL_fade(0, 15, PAL_TITLE_2.data, PAL_TITLE_1.data, title_fade_frames, TRUE);
+                pal_tgt = &PAL_TITLE_2;
+            }
+            frames_to_fade = title_fade_frames;
+        }
+
+        SPR_update();
         SYS_doVBlankProcess();
     }
 
