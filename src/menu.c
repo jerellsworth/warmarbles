@@ -102,7 +102,7 @@ void Menu_run(Menu *m) {
     for (u16 i = 0; i < 30; ++i) {
         SYS_doVBlankProcess();
     }
-    u16 title_fade_frames = 30;
+    u16 title_fade_frames = 60;
     u16 frames_to_fade = title_fade_frames;
     const Palette *pal_tgt = &PAL_TITLE_2;
     while (!m->completed) {
