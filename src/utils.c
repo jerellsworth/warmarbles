@@ -184,3 +184,12 @@ void normalize(fix16 x, fix16 y, fix16 v, fix16 *norm_x, fix16 *norm_y) {
     *norm_x = x_pos ? min(raw_norm_x, v) : max(-raw_norm_x, -v);
     *norm_y = y_pos ? min(raw_norm_y, v) : max(-raw_norm_y, -v);
 }
+
+s16 arcsin_fix_quadrant(fix16 norm_x, fix16 norm_y) {
+    s16 q1_theta = arcsin(abs(norm_y));
+    if (norm_x >= 0 && norm_y >= 0) return 1024 + q1_theta;
+    if (norm_x >= 0 && norm_y < 0) return -q1_theta;
+    if (norm_x < 0 && norm_y >= 0) return 512 - q1_theta;
+    return 512 + q1_theta;
+}
+

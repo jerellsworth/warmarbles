@@ -15,3 +15,4 @@ void agg_and_fade_in_all(
 );
 fix32 fix16MulTo32(fix16 val1, fix16 val2);
 void normalize(fix16 x, fix16 y, fix16 v, fix16 *norm_x, fix16 *norm_y);
+s16 arcsin_fix_quadrant(fix16 norm_x, fix16 norm_y);
