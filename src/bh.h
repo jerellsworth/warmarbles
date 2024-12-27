@@ -19,6 +19,7 @@ typedef int (*Menu_Select_CB)(Menu_Item *);
 
 #include "resources.h"
 
+#include "arcsin.h"
 #include "board.h"
 #include "game.h"
 #include "physics.h"
