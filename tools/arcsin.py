@@ -14,7 +14,7 @@ with open(OUT, 'w') as fout:
     fout.write("""
     #include "bh.h"
 
-    const s16 _ARCSIN_PRECALC = {
+    const s16 _ARCSIN_PRECALC[] = {
     """
     )
     fout.write(",\n".join(str(e) for e in y))
@@ -22,7 +22,7 @@ with open(OUT, 'w') as fout:
     };
 
     s16 arcsin(fix16 y) {
-        return _ARCSIN_PRECALC(y & 127);
+        return _ARCSIN_PRECALC[y & 127];
     }
     """
     )

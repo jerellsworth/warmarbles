@@ -1,7 +1,7 @@
 
     #include "bh.h"
 
-    const s16 _ARCSIN_PRECALC = {
+    const s16 _ARCSIN_PRECALC[] = {
     -0.0,
 -3.0,
 -5.0,
@@ -70,6 +70,6 @@
     };
 
     s16 arcsin(fix16 y) {
-        return _ARCSIN_PRECALC(y & 127);
+        return _ARCSIN_PRECALC[y & 127];
     }
     
