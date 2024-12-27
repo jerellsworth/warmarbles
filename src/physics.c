@@ -97,7 +97,7 @@ bool _special_collision_handle(Physics *p1, Physics *p2) {
 
     if (!bumper) return FALSE;
 
-    if ((!bumper->broken) && (bumper->collided_frames > 160)) {
+    if ((!bumper->broken) && (bumper->collided_frames > PHYSICS_FRAMES_TO_BUMPER_BREAK)) {
         bumper->broken = TRUE;
         bumper->pal = PAL1;
         _bumper_draw(bumper);
@@ -114,6 +114,13 @@ bool _special_collision_handle(Physics *p1, Physics *p2) {
         return TRUE;
     }
 
+    /*
+    if (other->type == PHYSICS_T_MARBLE) {
+        *imp_str = *imp_str + (*imp_str >> 1);
+    } else {
+        *imp_str = *imp_str << 1;
+    }
+    */
     bumper->anim = 1;    
     bumper->anim_frame = 0;
     _bumper_draw(bumper);
@@ -250,18 +257,29 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
 
         //if (dot <= 0) return FALSE;
 
-        fix16 imp_str = fix16Mul(
-            //dot + (dot >> 1),
-            dot,
-            (p1->inv_m + p2->inv_m)
-        );
-        fix16 imp_x = fix16Mul(imp_str, norm_x);
-        fix16 imp_y = fix16Mul(imp_str, norm_y);
 
         _collision_sfx(p1, p2);
+
+        /* TODO if one of them is a bumper the math is totally different
+         * draw a line tangent to the circle at a collision point
+         * draw a line perpendicular to the first line going through the
+           same collision point
+         * calculate angle between vector of marble and 2nd line
+         * rerflect the angle across the second line
+         * marble exits with the second angle, same velocity * dampening
+         * coefficient
+         */
         if (_special_collision_handle(p1, p2)) {
             return TRUE;
         }
+
+        fix16 imp_str = fix16Mul(
+            dot,
+            (p1->inv_m + p2->inv_m)
+        );
+
+        fix16 imp_x = fix16Mul(imp_str, norm_x);
+        fix16 imp_y = fix16Mul(imp_str, norm_y);
         
         if (!p1->stationary) {
             p1->dx -= fix16Mul(imp_x, p1->inv_m);
@@ -443,8 +461,8 @@ Physics *Physics_init_target(fix16 x, fix16 y, Game *g) {
     if (!p) return NULL;
 
     p->r = FIX16(16);
-    p->m = FIX16(12);
-    p->inv_m = FIX16(0.083);
+    p->m = FIX16(8);
+    p->inv_m = FIX16(0.125);
 
     p->x = x;
     p->y = y;

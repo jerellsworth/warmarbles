@@ -99,7 +99,7 @@ void Game_run(Game *g) {
 
         --rounds_to_bumper;
         if (rounds_to_bumper == 0) {
-            rounds_to_bumper = 3;
+            rounds_to_bumper = 2;
             Board_add_doodad(b, PHYSICS_T_BUMPER);
         }
     }
