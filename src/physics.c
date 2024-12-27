@@ -248,12 +248,6 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         if (p1->collided_frames < 65535) ++p1->collided_frames;
         if (p2->collided_frames < 65535) ++p2->collided_frames;
 
-        // https://gamedev.stackexchange.com/a/7901
-        fix16 norm_x, norm_y;
-        normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
-        fix16 diff_dx = p1->dx - p2->dx;
-        fix16 diff_dy = p1->dy - p2->dy;
-        fix16 dot = fix16Mul(norm_x, diff_dx) + fix16Mul(norm_y, diff_dy);
 
         //if (dot <= 0) return FALSE;
 
@@ -273,21 +267,45 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
             return TRUE;
         }
 
-        fix16 imp_str = fix16Mul(
-            dot,
-            (p1->inv_m + p2->inv_m)
-        );
+        Physics *stationary = NULL;
+        Physics *mobile = NULL;
+        if (p1->stationary) {
+            stationary = p1;
+            mobile = p2;
+        } else if (p2->stationary) {
+            stationary = p2;
+            mobile = p1;
+        }
 
-        fix16 imp_x = fix16Mul(imp_str, norm_x);
-        fix16 imp_y = fix16Mul(imp_str, norm_y);
-        
-        if (!p1->stationary) {
+        if (stationary) {
+            fix16 norm_x, norm_y;
+            dx = mobile->x - stationary->x;
+            dy = mobile->y - stationary->y;
+            normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
+            s16 theta = arcsin(norm_y);
+            // TODO here
+
+        } else {
+            // https://gamedev.stackexchange.com/a/7901
+            fix16 norm_x, norm_y;
+            normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
+            fix16 diff_dx = p1->dx - p2->dx;
+            fix16 diff_dy = p1->dy - p2->dy;
+            fix16 dot = fix16Mul(norm_x, diff_dx) + fix16Mul(norm_y, diff_dy);
+
+            fix16 imp_str = fix16Mul(
+                dot,
+                (p1->inv_m + p2->inv_m)
+            );
+
+            fix16 imp_x = fix16Mul(imp_str, norm_x);
+            fix16 imp_y = fix16Mul(imp_str, norm_y);
+            
             p1->dx -= fix16Mul(imp_x, p1->inv_m);
             p1->dy -= fix16Mul(imp_y, p1->inv_m);
-        }
-        if (!p2->stationary) {
             p2->dx += fix16Mul(imp_x, p2->inv_m);
             p2->dy += fix16Mul(imp_y, p2->inv_m);
+
         }
 
 
