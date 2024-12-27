@@ -1,5 +1,5 @@
 # next
-* palette fade on title screen from yellow to red to make title glow
+* remove accelerator collision sfx
 * fadeouts/fadeins
 * collision detection optimization
 * change criteria to 10 games one instead of 2
@@ -9,3 +9,4 @@
 
 # bugs
 * marble getting stuck in target
+* win screen palettes

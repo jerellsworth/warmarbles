@@ -124,6 +124,7 @@ void Menu_run(Menu *m) {
         SPR_update();
         SYS_doVBlankProcess();
     }
+    PAL_interruptFade();
 
     Menu_hide(m);
 }

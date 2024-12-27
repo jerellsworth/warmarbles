@@ -201,9 +201,11 @@ void _collision_sfx(Physics *p1, Physics *p2) {
                     break;
                 case PHYSICS_T_BUMPER:
                     if (pj->broken) {
+                        /*
                         if (pj->anim_frames == 0) {
                             sample = SND_SAMPLE_COL_MARBLE_ACCEL;
                         }
+                        */
                     } else {
                         sample = SND_SAMPLE_COL_MARBLE_BUMPER;    
                     }
