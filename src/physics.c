@@ -245,6 +245,24 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
 
     if (dist <= thresh) {
 
+        fix16 current_dx = p1->x - p2->x;
+        fix16 current_dy = p1->y - p2->r;
+        fix32 current_dist = fix16MulTo32(current_dx, current_dx) + fix16MulTo32(current_dy, current_dy);
+        if (current_dist <= thresh) {
+            /* objects are already stuck together. Rather than figuring
+             * out bounce, we just push them apart
+             */
+            if (!p1->stationary) {
+                p1->dx = current_dx << 1;
+                p1->dy = current_dy << 1;
+            }
+            if (!p2->stationary) {
+                p2->dx = -current_dx << 1;
+                p2->dy = -current_dy << 1;
+            }
+            return TRUE;
+        }
+
         if (p1->collided_frames < 65535) ++p1->collided_frames;
         if (p2->collided_frames < 65535) ++p2->collided_frames;
 
@@ -309,6 +327,7 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
             normalize(dx, dy, FIX16(1), &norm_x, &norm_y);
             fix16 diff_dx = p1->dx - p2->dx;
             fix16 diff_dy = p1->dy - p2->dy;
+
             fix16 dot = fix16Mul(norm_x, diff_dx) + fix16Mul(norm_y, diff_dy);
 
             fix16 imp_str = fix16Mul(
