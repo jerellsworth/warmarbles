@@ -1,5 +1,8 @@
 # next
+* put tickets up for sale
+* if objects inside eachother, normalize distance vector and multiply by x to find velocity
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
+  - add ttl and slow_frames fields, when slow_frames > x, set ttl, engage die animation, disable collision
 
 # eventually
 
