@@ -90,12 +90,20 @@ void Menu_input(Menu *m) {
 
 void Menu_run(Menu *m) {
     SPR_init();
-    m->spr_cursor = SPR_addSprite(
+    m->spr_cursor = SPR_addSpriteEx(
             &SPR_CURSOR,
             m->x,
             m->y,
-            TILE_ATTR(PAL1, TRUE, FALSE, FALSE)
+            TILE_ATTR_FULL(
+                PAL1,
+                TRUE,
+                FALSE,
+                FALSE,
+                0x04C0
+                ),
+            SPR_FLAG_AUTO_VISIBILITY |  SPR_FLAG_AUTO_TILE_UPLOAD
             );
+    // TODO hack. setting sprite position manually to let bg run into sprite vram
     m->completed = FALSE;
     Menu_draw(m);
     Menu_refresh_cursor(m);
