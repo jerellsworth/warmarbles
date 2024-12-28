@@ -7,7 +7,8 @@
 #define PHYSICS_NEARBY_THRESH FIX32(64)
 #define PHYSICS_MAX_VELOCITY_VECTOR FIX16(6)
 #define PHYSICS_MAX_VELOCITY_VECTOR_TARGET FIX16(4)
-#define PHYSICS_FRAMES_TO_BUMPER_BREAK 20
+#define PHYSICS_FRAMES_TO_BUMPER_BREAK 80
+#define PHYSICS_SLOW_THRESH FIX16(0.5)
 
 #define DRAG FIX16(0.025)
 
@@ -55,9 +56,12 @@ struct Physics_s {
     PhysicsType type;
 
     u16 collided_frames;
+    u16 slow_frames;
     bool broken;
 
     u8 init_frames;
+
+    u16 ttl;
 };
 
 extern Physics **ALL_PHYSICS;

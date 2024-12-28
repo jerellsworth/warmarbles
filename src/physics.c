@@ -168,21 +168,15 @@ bool _special_phys_handle(Physics *p) {
                 SPR_setAnim(p->sprite, 0);
             }
         }
-        /*
-        TODO despawn stuck marbles
-        if ((!p->broken) && p->dx == 0 && p->dy == 0) {
-            p->broken = TRUE;
-            p->has_collision = FALSE;
-            SPR_setAnim(p->sprite, 3);
-            p->anim_frame = 3 * 3;
-        } else if (p->broken && p->anim_frames > 0) {
-            --p->anim_frames;
-            if (p->anim_frames == 0) {
-                Physics_del(p);
-                return TRUE;
+        if ((!p->in_tray) && p->ttl == 0 && abs(p->dx) <= PHYSICS_SLOW_THRESH && abs(p->dy) <= PHYSICS_SLOW_THRESH) {
+            ++p->slow_frames;
+            if (p->slow_frames >= 120) {
+                p->ttl = 3 * 3;
+                SPR_setAnim(p->sprite, 3);
             }
+        } else {
+            p->slow_frames = 0;
         }
-        */
     }
     return FALSE;
 }
@@ -245,13 +239,13 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
 
     if (dist <= thresh) {
 
+        /*
         fix16 current_dx = p1->x - p2->x;
         fix16 current_dy = p1->y - p2->r;
         fix32 current_dist = fix16MulTo32(current_dx, current_dx) + fix16MulTo32(current_dy, current_dy);
         if (current_dist <= thresh) {
-            /* objects are already stuck together. Rather than figuring
-             * out bounce, we just push them apart
-             */
+            // objects are already stuck together. Rather than figuring
+            // out bounce, we just push them apart
             fix16 correct_dist = fix16Sqrt(fix32ToFix16(thresh)) - fix16Sqrt(fix32ToFix16(current_dist));
             fix16 norm_x, norm_y;
             normalize(current_dx, current_dy, FIX16(1), &norm_x, &norm_y);
@@ -269,6 +263,7 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
             }
             return TRUE;
         }
+        */
 
         if (p1->collided_frames < 65535) ++p1->collided_frames;
         if (p2->collided_frames < 65535) ++p2->collided_frames;
@@ -388,6 +383,14 @@ void _handle_tray(Physics *p, u8 tray_no) {
 
 void Physics_update(Physics *p) {
     ++p->frames_alive;
+
+    if (p->ttl > 0) {
+        --p->ttl;
+        if (p->ttl == 0) {
+            Physics_del(p);
+            return;
+        }
+    }
 
     if (_special_phys_handle(p)) return;
 
