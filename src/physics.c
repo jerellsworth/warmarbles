@@ -278,7 +278,6 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         }
 
         if (stationary) {
-            // https://datascience.netlify.app/general/2018/11/11/data_science_32.html
             dx = mobile->x - stationary->x;
             dy = mobile->y - stationary->y;
             fix16 norm_dx, norm_dy, norm_velx, norm_vely;
@@ -286,11 +285,23 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
             s16 theta_norm = arcsin_fix_quadrant(norm_dx, norm_dy);
             normalize(mobile->dx, mobile->dy, FIX16(1), &norm_velx, &norm_vely);
             s16 theta_vel_in = arcsin_fix_quadrant(norm_velx, norm_vely);
-            s16 theta_vel_out = theta_norm - (theta_vel_in - theta_norm);
-            // TODO here. need to calculate speed
+            s16 theta_vel_out = theta_add(
+                theta_norm,
+                -theta_add(theta_vel_in, -theta_norm)
+            );
+            fix16 speed = fix16Sqrt(
+                fix16Mul(
+                    mobile->dx,
+                    mobile->dx
+                )
+                + fix16Mul(
+                    mobile->dy,
+                    mobile->dy
+                )
+            );
 
-            mobile->dx = cosFix16(theta_vel_out);
-            mobile->dy = sinFix16(theta_vel_out);
+            mobile->dx = fix16Mul(cosFix16(theta_vel_out), speed);
+            mobile->dy = fix16Mul(sinFix16(theta_vel_out), speed);
 
         } else {
             // https://gamedev.stackexchange.com/a/7901

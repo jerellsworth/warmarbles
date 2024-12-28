@@ -1,5 +1,4 @@
 # next
-* bumper collision
 * collision detection optimization
 * change criteria to 10 games one instead of 2
 
@@ -7,5 +6,7 @@
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
 
 # bugs
+* marbles getting stuck in bumper
+* marbles getting stuck in target
 * win screen palettes
 * marbles falling off right side
