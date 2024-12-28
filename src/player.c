@@ -27,7 +27,7 @@ void _ai(Player *p) {
         fix16 dy = target->y - throw_center_y;
         fix16 norm_x, norm_y;
         normalize(dx, dy, FIX16(4.5), &norm_x, &norm_y);
-        g->throw_dx = norm_x;
+        g->throw_dx = min(norm_x, -FIX16(1));
         g->throw_dy = norm_y;
     } else if (g->throw_frames > 0) {
     } else {

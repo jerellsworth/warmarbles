@@ -1,11 +1,8 @@
 # next
-* collision detection optimization
-* change criteria to 10 games one instead of 2
 
 # eventually
 * after a few seconds of being still, marbles sitting on board are propelled in a random direction
 
 # bugs
 * win screen palettes
-* AI throwing marbles off right side
 * get rid of extra cursor on title screen
