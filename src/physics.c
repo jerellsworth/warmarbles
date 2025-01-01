@@ -389,8 +389,26 @@ void Physics_update(Physics *p) {
 
     if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
 
-        s16 r = fix16ToInt(p->y) >> 5;
-        s16 c = (fix16ToInt(p->x) - 24) >> 5;
+        fix16 x, y;
+        y = p->y;
+        x = p->x;
+        if (y >= FIX16(32 * 3 + 16)) {
+            // bottom half of board
+            if(y < FIX16(32 * 3 + 16 + 16)) {
+                // in the part with no bumpers
+                goto post_update;
+            }
+            // else, we need to correct to the right row
+            y -= FIX16(16);
+        }
+        if (x >= FIX16(32 * 2 + 16 + 24)) {
+            if (x < FIX16(32 * 2 + 16 + 24 + 16)) {
+                goto post_update;
+            }
+            x -= FIX16(16);
+        }
+        s16 r = fix16ToInt(y) >> 5;
+        s16 c = (fix16ToInt(x) - 24) >> 5;
         if (r < 0 || r >= BOARD_HEIGHT_TILES >> 2 || c < 0 || c >= BOARD_WIDTH_TILES >> 2) return;
         ++p->game->board->traffic[r][c];
 
@@ -398,9 +416,14 @@ void Physics_update(Physics *p) {
         // TODO dbg
         char buf[3];
         sprintf(buf, "%02d", p->game->board->traffic[r][c]);
-        VDP_drawText(buf, (c << 2) + 3, r << 2);
+        VDP_drawText(
+            buf,
+            (c << 2) + 3 + (c > 3 ? 2 : 0), 
+            (r << 2) + (r > 2 ? 2 : 0)
+        );
         */
     }
+    post_update:
 
     if (p->stationary) return;
     if (!(p->dx || p->dy)) return;
