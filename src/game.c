@@ -5,7 +5,7 @@ Game *Game_init(u8 n_players, SFX *sfx) {
     g->n_players = n_players;
     g->sfx = sfx;
     SPR_init();
-    PAL_setPalette(PAL0, PAL_TITLE_1.data, DMA);
+    PAL_setPalette(PAL0, PAL_BOARD.data, DMA);
     PAL_setPalette(PAL1, PAL_MARBLE.data, DMA);
     PAL_setPalette(PAL2, PAL_GUY.data, DMA);
     PAL_setPalette(PAL3, PAL_TARGET.data, DMA);
