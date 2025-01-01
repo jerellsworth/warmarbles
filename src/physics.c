@@ -239,31 +239,24 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
 
     if (dist <= thresh) {
 
-        /*
         fix16 current_dx = p1->x - p2->x;
-        fix16 current_dy = p1->y - p2->r;
+        fix16 current_dy = p1->y - p2->y;
         fix32 current_dist = fix16MulTo32(current_dx, current_dx) + fix16MulTo32(current_dy, current_dy);
-        if (current_dist <= thresh) {
-            // objects are already stuck together. Rather than figuring
-            // out bounce, we just push them apart
-            fix16 correct_dist = fix16Sqrt(fix32ToFix16(thresh)) - fix16Sqrt(fix32ToFix16(current_dist));
-            fix16 norm_x, norm_y;
-            normalize(current_dx, current_dy, FIX16(1), &norm_x, &norm_y);
-            if (!p1->stationary && !p2->stationary) {
-                p1->x -= fix16Mul(norm_x, correct_dist >> 1);
-                p1->y -= fix16Mul(norm_y, correct_dist >> 1);
-                p2->x += fix16Mul(norm_x, correct_dist >> 1);
-                p2->y += fix16Mul(norm_y, correct_dist >> 1);
-            } else if (!p1->stationary) {
-                p1->x -= fix16Mul(norm_x, correct_dist);
-                p1->y -= fix16Mul(norm_y, correct_dist);
-            } else if (!p2->stationary) {
-                p2->x += fix16Mul(norm_x, correct_dist);
-                p2->y += fix16Mul(norm_y, correct_dist);
+        if (thresh - current_dist >= FIX32(8)) {
+            // If objects are already stuck together, delete the marbles
+            bool rm_marble = FALSE;
+            if (p1->type == PHYSICS_T_MARBLE && p2->type == PHYSICS_T_TARGET && p1->ttl == 0) {
+                p1->ttl = 3 * 3;
+                SPR_setAnim(p1->sprite, 3);
+                rm_marble = TRUE;
             }
-            return TRUE;
+            if (p2->type == PHYSICS_T_MARBLE && p1->type == PHYSICS_T_TARGET && p2->ttl == 0) {
+                p2->ttl = 3 * 3;
+                SPR_setAnim(p2->sprite, 3);
+                rm_marble = TRUE;
+            }
+            if (rm_marble) return TRUE;
         }
-        */
 
         if (p1->collided_frames < 65535) ++p1->collided_frames;
         if (p2->collided_frames < 65535) ++p2->collided_frames;

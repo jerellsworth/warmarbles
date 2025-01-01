@@ -1,8 +1,8 @@
 # next
-* put tickets up for sale
 
 # eventually
-* preventing overlap could still use some work
 
 # bugs
+* finding most occupied tile doesn't use new bumper offsets
 * win screen palettes
+
