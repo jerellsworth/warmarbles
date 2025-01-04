@@ -154,7 +154,35 @@ bool _special_phys_handle(Physics *p) {
             if (p->init_frames == 0) {
                 SPR_setAnim(p->sprite, 0);
                 p->has_collision  = TRUE;
-                u16 theta = random_with_max(1023);
+
+                u8 left_marbles = 0;
+                u8 right_marbles = 0;
+                u8 side;
+                // TODO HERE
+                for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
+                    Physics *pi = ALL_PHYSICS[i];
+                    if (!pi) continue;
+                    if (pi->type != PHYSICS_T_MARBLE) continue;
+                    if (pi->x < FIX16(160)) {
+                        ++left_marbles;
+                    } else if (pi->x > FIX16(160)) {
+                        ++right_marbles;
+                    }
+                }
+                if (left_marbles > right_marbles) {
+                    side = 1;
+                } else if (left_marbles < right_marbles) {
+                    side = 0;
+                } else {
+                    side = random_with_max(1);
+                }
+                u16 theta;
+                if (side == 0) {
+                    theta = 320 + random_with_max(384);
+                } else {
+                    theta = theta_add(832, random_with_max(384)); 
+                }
+
                 fix16 dx = cosFix16(theta) << 2;
                 fix16 dy = sinFix16(theta) << 2;
                 p->dx = dx;
@@ -168,7 +196,7 @@ bool _special_phys_handle(Physics *p) {
                 SPR_setAnim(p->sprite, 0);
             }
         }
-        if ((!p->in_tray) && p->ttl == 0 && abs(p->dx) <= PHYSICS_SLOW_THRESH && abs(p->dy) <= PHYSICS_SLOW_THRESH) {
+        if ((!p->in_tray) && p->ttl == 0 && abs(p->dx) <= PHYSICS_SLOW_THRESH) {
             ++p->slow_frames;
             if (p->slow_frames >= 120) {
                 p->ttl = 3 * 3;
