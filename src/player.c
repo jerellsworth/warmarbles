@@ -65,6 +65,7 @@ void _ai(Player *p) {
         Guy_move(g, 0, p->ai_dy);
     }
     if (!(p->ai_frames_alive & 7)) {
+        Guy_grab(g);
         Guy_throw(g);
     }
 }
