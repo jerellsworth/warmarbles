@@ -10,7 +10,7 @@ Guy *Guy_init(fix16 x, fix16 y, bool reversed, Game *game) {
     if (reversed) {
         spr_def = &SPR_GUY2;
         g->x_offset_center = FIX16(40 - 12);
-        g->x_offset_marble = FIX16(40 - 20);
+        g->x_offset_marble = FIX16(40 - 20 - 8);
     } else {
         spr_def = &SPR_GUY;
         g->x_offset_center = FIX16(12);
@@ -104,7 +104,7 @@ void Guy_throw(Guy *g) {
 }
 
 void Guy_update(Guy *g) {
-    if (g->throw_frames == 0 && g->walking_m1 && (!g->walking_m0)) {
+    if (g->throw_frames == 0 && (!g->holding) && g->walking_m1 && (!g->walking_m0)) {
         SPR_setAnim(g->sprite, 0);
     }
     g->walking_m1 = g->walking_m0;
