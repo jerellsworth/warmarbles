@@ -26,6 +26,7 @@ struct Guy_s {
 Guy *Guy_init(fix16 x, fix16 y, bool reversed, Game *g);
 void Guy_del(Guy *t);
 void Guy_move(Guy *t, fix16 dx, fix16 dy);
+void Guy_grab(Guy *g);
 void Guy_throw(Guy *t);
 void Guy_update(Guy *t);
 void Guy_throw_cancel(Guy *g);

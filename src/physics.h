@@ -40,6 +40,7 @@ struct Physics_s {
     bool has_collision;
     bool in_tray;
     bool stationary;
+    bool held;
 
     u8 anim_frames;
 

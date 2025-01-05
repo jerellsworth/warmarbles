@@ -100,6 +100,11 @@ void Player_update(Player *p) {
     }
     Guy_move(p->guy, dx, dy);
     if (joy & BUTTON_B) {
-        Guy_throw(p->guy);
+        if (p->guy->holding && p->cooldown == 0) {
+            Guy_throw(p->guy);
+        } else {
+            Guy_grab(p->guy);
+            p->cooldown = 30;
+        }
     }
 }

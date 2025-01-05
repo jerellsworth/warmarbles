@@ -196,7 +196,7 @@ bool _special_phys_handle(Physics *p) {
                 SPR_setAnim(p->sprite, 0);
             }
         }
-        if ((!p->in_tray) && p->ttl == 0 && abs(p->dx) <= PHYSICS_SLOW_THRESH) {
+        if ((!p->in_tray) && (!p->held) && p->ttl == 0 && abs(p->dx) <= PHYSICS_SLOW_THRESH) {
             ++p->slow_frames;
             if (p->slow_frames >= 120) {
                 p->ttl = 3 * 3;

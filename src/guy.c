@@ -39,9 +39,19 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
         if (dy < 0) g->throw_dy -= GUY_ENGLISH_PER_FRAME;
         return;
     }
-    g->walking_m0 = TRUE;
-    if (!g->walking_m1) {
-        SPR_setAnim(g->sprite, 1);
+    if (g->holding) {
+        Physics *p = g->holding;
+        p->y += dy;
+        SPR_setPosition(
+            p->sprite,
+            fix16ToRoundedInt(p->x - p->sprite_offset_x),
+            fix16ToRoundedInt(p->y - p->sprite_offset_y)
+        );
+    } else {
+        g->walking_m0 = TRUE;
+        if (!g->walking_m1) {
+            SPR_setAnim(g->sprite, 1);
+        }
     }
     g->y += dy;
     if (g->y <= -FIX16(40)) {
@@ -67,6 +77,7 @@ void Guy_grab(Guy *g) {
     near->x = g->x + g->x_offset_marble;
     near->y = g->y + FIX16(48);
     near->has_collision = FALSE;
+    near->held = TRUE;
     if (near->in_tray) {
         near->in_tray = FALSE;
         Game_change_tray_marbles(g->game, near->tray_no, -1);
@@ -80,7 +91,7 @@ void Guy_throw(Guy *g) {
     if (g->throw_frames > 0) return;
     if (!g->holding) return;
     g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
-    near->dy = FIX16(-40 / 2 / GUY_FRAMES_PER_ANIM); // traveling 40 pixels in 2 animations which take GUY_FRAMES_PER_ANIM frames
+    g->holding->dy = FIX16(-40 / 2 / GUY_FRAMES_PER_ANIM); // traveling 40 pixels in 2 animations which take GUY_FRAMES_PER_ANIM frames
     g->throw_dy = 0;
     g->throw_dx = g->reversed ? -FIX16(3) : FIX16(3);
     SPR_setAnim(g->sprite, 2);
@@ -101,6 +112,7 @@ void Guy_update(Guy *g) {
             g->holding->dy = g->throw_dy;
             SFX_incidental(g->game->sfx, SND_SAMPLE_THROW);
             g->holding = NULL;
+            g->holding->held = FALSE;
         } else if (g->throw_frames == 0) {
             SPR_setAnim(g->sprite, 0);
         }
