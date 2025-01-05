@@ -39,15 +39,7 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
         if (dy < 0) g->throw_dy -= GUY_ENGLISH_PER_FRAME;
         return;
     }
-    if (g->holding) {
-        Physics *p = g->holding;
-        p->y += dy;
-        SPR_setPosition(
-            p->sprite,
-            fix16ToRoundedInt(p->x - p->sprite_offset_x),
-            fix16ToRoundedInt(p->y - p->sprite_offset_y)
-        );
-    } else {
+    if (!g->holding) {
         g->walking_m0 = TRUE;
         if (!g->walking_m1) {
             SPR_setAnim(g->sprite, 1);
@@ -58,6 +50,15 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
         g->y = -FIX16(40);
     } else if (g->y >= FIX16(224 - 72)) {
         g->y = FIX16(224 - 72);
+    }
+    if (g->holding) {
+        Physics *p = g->holding;
+        p->y = g->y + FIX16(48);
+        SPR_setPosition(
+            p->sprite,
+            fix16ToRoundedInt(p->x - p->sprite_offset_x),
+            fix16ToRoundedInt(p->y - p->sprite_offset_y)
+        );
     }
     SPR_setPosition(
         g->sprite,
@@ -85,6 +86,11 @@ void Guy_grab(Guy *g) {
     near->dx = 0;
     near->dy = 0;
     SPR_setAnim(g->sprite, 4);
+    SPR_setPosition(
+        near->sprite,
+        fix16ToRoundedInt(near->x - near->sprite_offset_x),
+        fix16ToRoundedInt(near->y - near->sprite_offset_y)
+    );
 }
 
 void Guy_throw(Guy *g) {
@@ -111,8 +117,8 @@ void Guy_update(Guy *g) {
             g->holding->dx = g->throw_dx;
             g->holding->dy = g->throw_dy;
             SFX_incidental(g->game->sfx, SND_SAMPLE_THROW);
-            g->holding = NULL;
             g->holding->held = FALSE;
+            g->holding = NULL;
         } else if (g->throw_frames == 0) {
             SPR_setAnim(g->sprite, 0);
         }

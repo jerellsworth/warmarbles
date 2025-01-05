@@ -99,12 +99,12 @@ void Player_update(Player *p) {
         dx = FIX16(4);
     }
     Guy_move(p->guy, dx, dy);
-    if (joy & BUTTON_B) {
+    if (joy & (BUTTON_A | BUTTON_B | BUTTON_C)) {
         if (p->guy->holding && p->cooldown == 0) {
             Guy_throw(p->guy);
-        } else {
+        } else if (!p->guy->holding) {
             Guy_grab(p->guy);
-            p->cooldown = 30;
+            p->cooldown = 10;
         }
     }
 }

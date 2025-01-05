@@ -1,8 +1,10 @@
 # next
-* able to carry marble
 * moe wants a kick
+
 
 # eventually
 
 # bugs
+* remove left arm from holding animation since marble should be between arms
+* can still have walking animation when grabbing
 
