@@ -75,14 +75,15 @@ void Guy_grab(Guy *g) {
     Physics *near = Physics_find_nearby(center_x, center_y, PHYSICS_T_MARBLE);
     if (!near) return;
     g->holding = near;
+    if (!near->in_tray) {
+        near->in_tray = TRUE;
+        near->tray_no = g->reversed? 1 : 0;
+        Game_change_tray_marbles(g->game, near->tray_no, 1);
+    }
     near->x = g->x + g->x_offset_marble;
     near->y = g->y + FIX16(48);
     near->has_collision = FALSE;
     near->held = TRUE;
-    if (near->in_tray) {
-        near->in_tray = FALSE;
-        Game_change_tray_marbles(g->game, near->tray_no, -1);
-    }
     near->dx = 0;
     near->dy = 0;
     SPR_setAnim(g->sprite, 4);
@@ -117,6 +118,10 @@ void Guy_update(Guy *g) {
             g->holding->dx = g->throw_dx;
             g->holding->dy = g->throw_dy;
             SFX_incidental(g->game->sfx, SND_SAMPLE_THROW);
+            if (g->holding->in_tray) {
+                g->holding->in_tray = FALSE;
+                Game_change_tray_marbles(g->game, g->holding->tray_no, -1);
+            }
             g->holding->held = FALSE;
             g->holding = NULL;
         } else if (g->throw_frames == 0) {
