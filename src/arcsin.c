@@ -1,5 +1,5 @@
 
-    #include "bh.h"
+    #include "shared.h"
 
     const s16 _ARCSIN_PRECALC[] = {
     -0.0,

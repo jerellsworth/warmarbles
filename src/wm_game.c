@@ -1,16 +1,17 @@
-#include "bh.h"
+#include "wm.h"
 
-Game *Game_init(u8 n_players, SFX *sfx) {
-    Game *g = st_calloc(1, sizeof(Game));
+Game *WM_Game_init(u8 n_players, SFX *sfx) {
+    WM_Game *g = st_calloc(1, sizeof(WM_Game));
     g->n_players = n_players;
-    g->sfx = sfx;
+    g->sfx = WM_SFX_init();
     SPR_init();
-    PAL_setPalette(PAL0, PAL_BOARD.data, DMA);
-    PAL_setPalette(PAL1, PAL_MARBLE.data, DMA);
-    PAL_setPalette(PAL2, PAL_GUY.data, DMA);
-    PAL_setPalette(PAL3, PAL_TARGET.data, DMA);
+    PAL_setPalette(PAL0, PAL_WM_BOARD.data, DMA);
+    PAL_setPalette(PAL1, PAL_WM_MARBLE.data, DMA);
+    PAL_setPalette(PAL2, PAL_WM_GUY.data, DMA);
+    PAL_setPalette(PAL3, PAL_WM_TARGET.data, DMA);
     VDP_setTextPalette(PAL1);
-    XGM_startPlay(XGM_battle);
+    VDP_loadFont(&TLS_FONT, DMA);
+    XGM_startPlay(XGM_WM_battle);
     return g;
 }
 
@@ -134,6 +135,7 @@ void Game_run(Game *g) {
 }
 
 void Game_del(Game *g) {
+    WM_SFX_del(g->sfx);
     VDP_init();
     free(g);
 }
