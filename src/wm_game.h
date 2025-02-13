@@ -26,7 +26,7 @@ struct WM_Game_s {
     WM_SFX *sfx;
 };
 
-WM_Game *Game_init(u8 n_players);
+WM_Game *WM_Game_init(u8 n_players);
 void WM_Game_run(WM_Game *g);
 void WM_Game_del(WM_Game *g);
 void WM_Game_draw_score(WM_Game *g);

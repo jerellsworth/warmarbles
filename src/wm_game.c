@@ -1,6 +1,6 @@
 #include "wm.h"
 
-WM_Game *WM_Game_init(u8 n_players, SFX *sfx) {
+WM_Game *WM_Game_init(u8 n_players) {
     WM_Game *g = st_calloc(1, sizeof(WM_Game));
     g->n_players = n_players;
     g->sfx = WM_SFX_init();
@@ -15,8 +15,8 @@ WM_Game *WM_Game_init(u8 n_players, SFX *sfx) {
     return g;
 }
 
-Physics *WM_Game_enter_marble(WM_Game *g) {
-    SFX_incidental(g->sfx, WM_SND_SAMPLE_MARBLE_ENTER);
+WM_Physics *WM_Game_enter_marble(WM_Game *g) {
+    WM_SFX_incidental(g->sfx, WM_SND_SAMPLE_MARBLE_ENTER);
     fix16 x, y;
     x = FIX16(160);
     if (random_with_max(1)) {
@@ -29,7 +29,7 @@ Physics *WM_Game_enter_marble(WM_Game *g) {
 }
 
 void WM_Game_score(WM_Game *g, u8 player) {
-    SFX_incidental(g->sfx, WM_SND_SAMPLE_SCORE);
+    WM_SFX_incidental(g->sfx, WM_SND_SAMPLE_SCORE);
     if (player == 0) {
         ++g->p1_score;
     } else {
@@ -85,7 +85,7 @@ void WM_Game_run(WM_Game *g) {
         }
         WM_Guy_throw_cancel(g->guy1);
         WM_Guy_throw_cancel(g->guy2);
-        WM_Physics_del_type(PHYSICS_T_MARBLE);
+        WM_Physics_del_type(WM_PHYSICS_T_MARBLE);
         WM_Physics_del(g->target);
 
         if (g->p1_score >= WM_GAME_WINNING_SCORE) {
@@ -134,7 +134,7 @@ void WM_Game_run(WM_Game *g) {
     WM_Board_del(b);
 }
 
-void WM_Game_del(Game *g) {
+void WM_Game_del(WM_Game *g) {
     WM_SFX_del(g->sfx);
     VDP_init();
     free(g);
@@ -158,7 +158,7 @@ void WM_Game_change_tray_marbles(WM_Game *g, u8 tray, u8 diff) {
     */
     for (u8 i = 0; i < 2; ++i) {
         if (g->marbles_in_tray[i] >= WM_GAME_N_MARBLES) {
-            Game_score(g, 1 - i);
+            WM_Game_score(g, 1 - i);
         }
     }
 }

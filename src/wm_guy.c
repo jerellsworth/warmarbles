@@ -1,4 +1,4 @@
-#include "bh.h"
+#include "wm.h"
 
 WM_Guy *WM_Guy_init(fix16 x, fix16 y, bool reversed, WM_Game *game) {
     WM_Guy *g = st_calloc(1, sizeof(WM_Guy));
@@ -94,11 +94,11 @@ void WM_Guy_grab(WM_Guy *g) {
     );
 }
 
-void WM_Guy_throw(Guy *g) {
+void WM_Guy_throw(WM_Guy *g) {
     if (g->throw_frames > 0) return;
     if (!g->holding) return;
-    g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
-    g->holding->dy = FIX16(-40 / 2 / GUY_FRAMES_PER_ANIM); // traveling 40 pixels in 2 animations which take GUY_FRAMES_PER_ANIM frames
+    g->throw_frames = WM_GUY_FRAMES_PER_ANIM * 10;
+    g->holding->dy = FIX16(-40 / 2 / WM_GUY_FRAMES_PER_ANIM); // traveling 40 pixels in 2 animations which take WM_GUY_FRAMES_PER_ANIM frames
     g->throw_dy = 0;
     g->throw_dx = g->reversed ? -FIX16(3) : FIX16(3);
     SPR_setAnim(g->sprite, 2);

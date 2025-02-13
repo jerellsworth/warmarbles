@@ -1,4 +1,4 @@
-#include "bh.h"
+#include "shared.h"
 
 void *st_calloc(u16 nitems, u16 size) {
     u16 bytes = nitems * size;

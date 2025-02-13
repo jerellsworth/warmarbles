@@ -1,4 +1,4 @@
-#include "bh.h"
+#include "shared.h"
 
 int main(bool hard_reset) {
     if (!hard_reset) SYS_hardReset();
@@ -7,6 +7,5 @@ int main(bool hard_reset) {
         WM_Game_run(g);
         WM_Game_del(g);
     }
-    SFX_del(sfx);
 	return 0;
 }

@@ -20,7 +20,7 @@ WM_Board *WM_Board_init(WM_Game *g);
 void WM_Board_del(WM_Board *b);
 
 void WM_Board_most_used_cell(WM_Board *b, u16 *row, u16 *col);
-Physics *WM_Board_add_doodad(WM_Board *b, WM_PhysicsType t);
+WM_Physics *WM_Board_add_doodad(WM_Board *b, WM_PhysicsType t);
 void WM_Board_clear_doodads(WM_Board *b);
 
 #endif

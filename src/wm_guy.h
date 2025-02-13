@@ -3,8 +3,8 @@
 
 #include "wm.h"
 
-#define GUY_FRAMES_PER_ANIM 5
-#define GUY_ENGLISH_PER_FRAME FIX16(0.2)
+#define WM_GUY_FRAMES_PER_ANIM 5
+#define WM_GUY_ENGLISH_PER_FRAME FIX16(0.2)
 
 struct WM_Guy_s {
     WM_Game *game;

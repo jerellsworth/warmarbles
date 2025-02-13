@@ -76,11 +76,11 @@ bool WM_Physics_check_collision(WM_Physics *p1, WM_Physics *p2);
 void WM_Physics_update(WM_Physics *p);
 void WM_Physics_update_all(void);
 
-WM_Physics *Physics_init_marble(fix16 x, fix16 y, WM_Game *g);
-WM_Physics *Physics_init_target(fix16 x, fix16 y, WM_Game *g);
-WM_Physics *Physics_init_bumper(fix16 x, fix16 y, WM_Game *g);
+WM_Physics *WM_Physics_init_marble(fix16 x, fix16 y, WM_Game *g);
+WM_Physics *WM_Physics_init_target(fix16 x, fix16 y, WM_Game *g);
+WM_Physics *WM_Physics_init_bumper(fix16 x, fix16 y, WM_Game *g);
 
-WM_Physics *Physics_find_nearby(fix16 x, fix16 y, WM_PhysicsType t);
+WM_Physics *WM_Physics_find_nearby(fix16 x, fix16 y, WM_PhysicsType t);
 
 u8 WM_Physics_count_type(WM_PhysicsType t);
 void WM_Physics_del_type(WM_PhysicsType t);

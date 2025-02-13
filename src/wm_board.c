@@ -1,4 +1,4 @@
-#include "bh.h"
+#include "wm.h"
 
 WM_Board *WM_Board_init(WM_Game *g) {
     WM_Board *b = st_calloc(1, sizeof(WM_Board));

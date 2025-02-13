@@ -1,4 +1,4 @@
-#include "bh.h"
+#include "shared.h"
 
 #define LN2 FIX16(0.69)
 
