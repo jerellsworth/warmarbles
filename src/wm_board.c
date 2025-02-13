@@ -68,7 +68,7 @@ void WM_Board_most_used_cell(WM_Board *b, u16 *row, u16 *col) {
     *col = cell_no_winner % (WM_BOARD_WIDTH_TILES >> 2);
 }
 
-WM_Physics *Board_add_doodad(WM_Board *b, WM_PhysicsType t) {
+WM_Physics *WM_Board_add_doodad(WM_Board *b, WM_PhysicsType t) {
 
     u16 row, col;
     WM_Board_most_used_cell(b, &row, &col);

@@ -160,7 +160,7 @@ bool _special_phys_handle(WM_Physics *p) {
                 u8 side;
                 // TODO HERE
                 for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
-                    Physics *pi = WM_ALL_PHYSICS[i];
+                    WM_Physics *pi = WM_ALL_PHYSICS[i];
                     if (!pi) continue;
                     if (pi->type != WM_PHYSICS_T_MARBLE) continue;
                     if (pi->x < FIX16(160)) {
@@ -511,7 +511,7 @@ void WM_Physics_update(WM_Physics *p) {
 
 void WM_Physics_update_all(void) {
     for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
-        Physics *pi = WM_ALL_PHYSICS[i];
+        WM_Physics *pi = WM_ALL_PHYSICS[i];
         if (!pi) continue;
         if (!pi->has_collision) continue;
         if (pi->in_tray) continue;
@@ -525,7 +525,7 @@ void WM_Physics_update_all(void) {
     }
     for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
         
-        Physics *p = WM_ALL_PHYSICS[i];
+        WM_Physics *p = WM_ALL_PHYSICS[i];
         if (!p) continue;
         WM_Physics_update(p);
     }
@@ -556,7 +556,7 @@ WM_Physics *WM_Physics_init_marble(fix16 x, fix16 y, WM_Game *g) {
     return p;
 }
 
-Physics *WM_Physics_init_target(fix16 x, fix16 y, WM_Game *g) {
+WM_Physics *WM_Physics_init_target(fix16 x, fix16 y, WM_Game *g) {
     WM_Physics *p = WM_Physics_init(g);
     if (!p) return NULL;
 
@@ -578,7 +578,7 @@ Physics *WM_Physics_init_target(fix16 x, fix16 y, WM_Game *g) {
     return p;
 }
 
-Physics *Physics_init_bumper(fix16 x, fix16 y, WM_Game *g) {
+WM_Physics *WM_Physics_init_bumper(fix16 x, fix16 y, WM_Game *g) {
     WM_Physics *p = WM_Physics_init(g);
     if (!p) return NULL;
 

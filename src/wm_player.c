@@ -18,9 +18,9 @@ void WM_Player_del(WM_Player *p) {
 void _ai(WM_Player *p) {
     if (p->game->state == WM_GAME_STATE_PAUSED) return;
     ++p->ai_frames_alive;
-    Guy *g = p->guy;
+    WM_Guy *g = p->guy;
     if (g->throw_frames == WM_GUY_FRAMES_PER_ANIM * (10 - 5) + 1) {
-        Physics *target = p->game->target;
+        WM_Physics *target = p->game->target;
         fix16 throw_center_x = g->x + g->x_offset_marble;
         fix16 throw_center_y = g->y + FIX16(8);
         fix16 dx = target->x - throw_center_x;
@@ -37,7 +37,7 @@ void _ai(WM_Player *p) {
             u16 marbles_up = 0;
             u16 marbles_down = 0;
             for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
-                Physics *ph = WM_ALL_PHYSICS[i];
+                WM_Physics *ph = WM_ALL_PHYSICS[i];
                 if (!ph) continue;
                 if (ph->type != WM_PHYSICS_T_MARBLE) continue;
                 if (ph->in_tray && ph->tray_no == 1) {
@@ -62,11 +62,11 @@ void _ai(WM_Player *p) {
             }
             p->ai_frames_next_choice = 15;
         }
-        Guy_move(g, 0, p->ai_dy);
+        WM_Guy_move(g, 0, p->ai_dy);
     }
     if (!(p->ai_frames_alive & 7)) {
-        Guy_grab(g);
-        Guy_throw(g);
+        WM_Guy_grab(g);
+        WM_Guy_throw(g);
     }
 }
 
@@ -80,7 +80,7 @@ void WM_Player_update(WM_Player *p) {
             p->game->state = WM_GAME_STATE_PAUSED;
             p->cooldown = 30;
         } else if (p->game->state == WM_GAME_STATE_PAUSED) {
-            SFX_incidental(p->game->sfx, WM_SND_SAMPLE_CONFIRM);
+            WM_SFX_incidental(p->game->sfx, WM_SND_SAMPLE_CONFIRM);
             p->cooldown = 30;
             p->game->state = WM_GAME_STATE_IN_PROGRESS;
         }

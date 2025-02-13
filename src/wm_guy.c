@@ -117,7 +117,7 @@ void WM_Guy_update(WM_Guy *g) {
         } else if (g->throw_frames == WM_GUY_FRAMES_PER_ANIM * (10 - 5)) {
             g->holding->dx = g->throw_dx;
             g->holding->dy = g->throw_dy;
-            SFX_incidental(g->game->sfx, WM_SND_SAMPLE_THROW);
+            WM_SFX_incidental(g->game->sfx, WM_SND_SAMPLE_THROW);
             if (g->holding->in_tray) {
                 g->holding->in_tray = FALSE;
                 WM_Game_change_tray_marbles(g->game, g->holding->tray_no, -1);
