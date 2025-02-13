@@ -1,7 +1,7 @@
 #ifndef WM_GAME_H
 #define WM_GAME_H
 
-#include "bh.h"
+#include "wm.h"
 
 #define WM_GAME_N_MARBLES 5
 #define WM_GAME_WINNING_SCORE 7

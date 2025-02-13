@@ -1,18 +1,18 @@
 #include "bh.h"
 
-Guy *Guy_init(fix16 x, fix16 y, bool reversed, Game *game) {
-    Guy *g = st_calloc(1, sizeof(Guy));
+WM_Guy *WM_Guy_init(fix16 x, fix16 y, bool reversed, WM_Game *game) {
+    WM_Guy *g = st_calloc(1, sizeof(WM_Guy));
     g->game = game;
     g->x = x;
     g->y = y;
     g->reversed = reversed;
     const SpriteDefinition *spr_def;
     if (reversed) {
-        spr_def = &SPR_GUY2;
+        spr_def = &SPR_WM_GUY2;
         g->x_offset_center = FIX16(40 - 12);
         g->x_offset_marble = FIX16(40 - 20 - 8);
     } else {
-        spr_def = &SPR_GUY;
+        spr_def = &SPR_WM_GUY;
         g->x_offset_center = FIX16(12);
         g->x_offset_marble = FIX16(20);
     }
@@ -25,18 +25,18 @@ Guy *Guy_init(fix16 x, fix16 y, bool reversed, Game *game) {
     return g;
 }
 
-void Guy_del(Guy *t) {
+void WM_Guy_del(WM_Guy *t) {
     SPR_releaseSprite(t->sprite);
     free(t);
 }
 
-void Guy_move(Guy *g, fix16 dx, fix16 dy) {
+void WM_Guy_move(WM_Guy *g, fix16 dx, fix16 dy) {
     if (dx == 0 && dy == 0) return;
     if (g->throw_frames > 0) {
-        if (dx > 0 && (!g->reversed)) g->throw_dx += GUY_ENGLISH_PER_FRAME;
-        else if (dx < 0 && g->reversed) g->throw_dx -= GUY_ENGLISH_PER_FRAME;
-        if (dy > 0) g->throw_dy += GUY_ENGLISH_PER_FRAME;
-        if (dy < 0) g->throw_dy -= GUY_ENGLISH_PER_FRAME;
+        if (dx > 0 && (!g->reversed)) g->throw_dx += WM_GUY_ENGLISH_PER_FRAME;
+        else if (dx < 0 && g->reversed) g->throw_dx -= WM_GUY_ENGLISH_PER_FRAME;
+        if (dy > 0) g->throw_dy += WM_GUY_ENGLISH_PER_FRAME;
+        if (dy < 0) g->throw_dy -= WM_GUY_ENGLISH_PER_FRAME;
         return;
     }
     if (!g->holding) {
@@ -52,7 +52,7 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
         g->y = FIX16(224 - 72);
     }
     if (g->holding) {
-        Physics *p = g->holding;
+        WM_Physics *p = g->holding;
         p->y = g->y + FIX16(48);
         SPR_setPosition(
             p->sprite,
@@ -67,18 +67,18 @@ void Guy_move(Guy *g, fix16 dx, fix16 dy) {
     );
 }
 
-void Guy_grab(Guy *g) {
+void WM_Guy_grab(WM_Guy *g) {
     if (g->throw_frames > 0) return;
     if (g->holding) return;
     fix16 center_x = g->x + g->x_offset_center;
     fix16 center_y = g->y + FIX16(64);
-    Physics *near = Physics_find_nearby(center_x, center_y, PHYSICS_T_MARBLE);
+    WM_Physics *near = WM_Physics_find_nearby(center_x, center_y, WM_PHYSICS_T_MARBLE);
     if (!near) return;
     g->holding = near;
     if (!near->in_tray) {
         near->in_tray = TRUE;
         near->tray_no = g->reversed? 1 : 0;
-        Game_change_tray_marbles(g->game, near->tray_no, 1);
+        WM_Game_change_tray_marbles(g->game, near->tray_no, 1);
     }
     near->x = g->x + g->x_offset_marble;
     near->y = g->y + FIX16(48);
@@ -94,7 +94,7 @@ void Guy_grab(Guy *g) {
     );
 }
 
-void Guy_throw(Guy *g) {
+void WM_Guy_throw(Guy *g) {
     if (g->throw_frames > 0) return;
     if (!g->holding) return;
     g->throw_frames = GUY_FRAMES_PER_ANIM * 10;
@@ -104,7 +104,7 @@ void Guy_throw(Guy *g) {
     SPR_setAnim(g->sprite, 2);
 }
 
-void Guy_update(Guy *g) {
+void WM_Guy_update(WM_Guy *g) {
     if (g->throw_frames == 0 && (!g->holding) && g->walking_m1 && (!g->walking_m0)) {
         SPR_setAnim(g->sprite, 0);
     }
@@ -112,15 +112,15 @@ void Guy_update(Guy *g) {
     g->walking_m0 = FALSE;
     if (g->throw_frames > 0) {
         --g->throw_frames;
-        if (g->throw_frames == GUY_FRAMES_PER_ANIM * (10 - 2)) {
+        if (g->throw_frames == WM_GUY_FRAMES_PER_ANIM * (10 - 2)) {
             g->holding->dy = 0;
-        } else if (g->throw_frames == GUY_FRAMES_PER_ANIM * (10 - 5)) {
+        } else if (g->throw_frames == WM_GUY_FRAMES_PER_ANIM * (10 - 5)) {
             g->holding->dx = g->throw_dx;
             g->holding->dy = g->throw_dy;
-            SFX_incidental(g->game->sfx, SND_SAMPLE_THROW);
+            SFX_incidental(g->game->sfx, WM_SND_SAMPLE_THROW);
             if (g->holding->in_tray) {
                 g->holding->in_tray = FALSE;
-                Game_change_tray_marbles(g->game, g->holding->tray_no, -1);
+                WM_Game_change_tray_marbles(g->game, g->holding->tray_no, -1);
             }
             g->holding->held = FALSE;
             g->holding = NULL;
@@ -130,7 +130,7 @@ void Guy_update(Guy *g) {
     }
 }
 
-void Guy_throw_cancel(Guy *g) {
+void WM_Guy_throw_cancel(WM_Guy *g) {
     if (g->holding) {
         g->holding->has_collision = TRUE;
         g->holding->dx = 0;

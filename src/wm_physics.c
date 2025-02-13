@@ -1,24 +1,24 @@
-#include "bh.h"
+#include "wm.h"
 
-Physics *_all_physics[PHYSICS_MAX_OBJECTS];
-Physics **ALL_PHYSICS = _all_physics;
+WM_Physics *_all_physics[WM_PHYSICS_MAX_OBJECTS];
+WM_Physics **WM_ALL_PHYSICS = _all_physics;
 
 fix32 _THRESH[][3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
 
 u16 _BUMPER_TILE;
 
-FORCE_INLINE u8 _type_to_thresh_idx(Physics *p) {
+FORCE_INLINE u8 _type_to_thresh_idx(WM_Physics *p) {
     switch (p->type) {
-        case PHYSICS_T_TARGET:
+        case WM_PHYSICS_T_TARGET:
             return 1;
-        case PHYSICS_T_BUMPER:
+        case WM_PHYSICS_T_BUMPER:
             return 2;
         default:
             return 0;
     }
 }
 
-FORCE_INLINE fix32 _thresh(Physics *p1, Physics *p2) {
+FORCE_INLINE fix32 _thresh(WM_Physics *p1, WM_Physics *p2) {
     fix32 ret = _THRESH[_type_to_thresh_idx(p1)][_type_to_thresh_idx(p2)];
     if (ret == 0) {
         fix16 r_plus_r = p1->r + p2->r;
@@ -28,30 +28,30 @@ FORCE_INLINE fix32 _thresh(Physics *p1, Physics *p2) {
     return ret;
 }
 
-void Physics_engine_init(Game *g) {
+void WM_Physics_engine_init(WM_Game *g) {
     _BUMPER_TILE = g->next_tile_idx;
-    VDP_loadTileSet(&TLS_BUMPER, _BUMPER_TILE, DMA);
-    g->next_tile_idx += TLS_BUMPER.numTile;
+    VDP_loadTileSet(&TLS_WM_BUMPER, _BUMPER_TILE, DMA);
+    g->next_tile_idx += TLS_WM_BUMPER.numTile;
 }
 
-Physics *Physics_init(Game *g) {
+WM_Physics *WM_Physics_init(WM_Game *g) {
     u8 reg_idx = 0;
-    for (; reg_idx < PHYSICS_MAX_OBJECTS; ++reg_idx) {
-        if (!ALL_PHYSICS[reg_idx]) {
+    for (; reg_idx < WM_PHYSICS_MAX_OBJECTS; ++reg_idx) {
+        if (!WM_ALL_PHYSICS[reg_idx]) {
             goto found_idx;
         }
     }
     return NULL;
     found_idx:
-    Physics *p = st_calloc(1, sizeof(Physics));
+    WM_Physics *p = st_calloc(1, sizeof(WM_Physics));
     p->reg_idx = reg_idx;
     p->game = g;
-    ALL_PHYSICS[reg_idx] = p;
+    WM_ALL_PHYSICS[reg_idx] = p;
     p->has_collision = TRUE;
     return p;
 }
 
-void Physics_del(Physics *p) {
+void WM_Physics_del(WM_Physics *p) {
     if (p->sprite) {
         SPR_releaseSprite(p->sprite);
     }
@@ -64,11 +64,11 @@ void Physics_del(Physics *p) {
             p->tile_h
         );
     }
-    ALL_PHYSICS[p->reg_idx] = NULL;
+    WM_ALL_PHYSICS[p->reg_idx] = NULL;
     free(p);
 }
 
-void _bumper_draw(Physics *p) {
+void _bumper_draw(WM_Physics *p) {
     u16 base_tile = p->tile_idx + p->anim * 144 + p->anim_frame * 4;
     for (u8 r = 0; r < p->tile_h; ++r) {
         VDP_fillTileMapRectInc(
@@ -83,27 +83,27 @@ void _bumper_draw(Physics *p) {
     }
 }
 
-bool _special_collision_handle(Physics *p1, Physics *p2) {
-    Physics *bumper = NULL;
-    Physics *other = NULL;
+bool _special_collision_handle(WM_Physics *p1, WM_Physics *p2) {
+    WM_Physics *bumper = NULL;
+    WM_Physics *other = NULL;
     // It should only be one or the other unless something really bad happened
-    if (p1->type == PHYSICS_T_BUMPER) {
+    if (p1->type == WM_PHYSICS_T_BUMPER) {
         bumper = p1;
         other = p2;
-    } else if (p2->type == PHYSICS_T_BUMPER) {
+    } else if (p2->type == WM_PHYSICS_T_BUMPER) {
         bumper = p2;
         other = p1;
     }
 
     if (!bumper) return FALSE;
 
-    if ((!bumper->broken) && (bumper->collided_frames > PHYSICS_FRAMES_TO_BUMPER_BREAK)) {
+    if ((!bumper->broken) && (bumper->collided_frames > WM_PHYSICS_FRAMES_TO_BUMPER_BREAK)) {
         bumper->broken = TRUE;
         bumper->pal = PAL1;
         _bumper_draw(bumper);
     }
     if (bumper->broken) {
-        if (other->type == PHYSICS_T_MARBLE && other->anim_frames == 0) {
+        if (other->type == WM_PHYSICS_T_MARBLE && other->anim_frames == 0) {
             SPR_setAnim(other->sprite, 1);
             other->anim_frames = 9;
         }
@@ -128,9 +128,9 @@ bool _special_collision_handle(Physics *p1, Physics *p2) {
 
 }
 
-bool _special_phys_handle(Physics *p) {
+bool _special_phys_handle(WM_Physics *p) {
     // TODO there's a lot of hardcoded garbage here. Refactor
-    if (p->type == PHYSICS_T_BUMPER) {
+    if (p->type == WM_PHYSICS_T_BUMPER) {
         if (!(p->frames_alive & 7)) {
             if (p->anim == 0) {
                 if (p->anim_frame == 2) {
@@ -148,7 +148,7 @@ bool _special_phys_handle(Physics *p) {
             }
             _bumper_draw(p);
         }
-    } else if (p->type == PHYSICS_T_MARBLE) {
+    } else if (p->type == WM_PHYSICS_T_MARBLE) {
         if (p->init_frames > 0) {
             --p->init_frames;
             if (p->init_frames == 0) {
@@ -159,10 +159,10 @@ bool _special_phys_handle(Physics *p) {
                 u8 right_marbles = 0;
                 u8 side;
                 // TODO HERE
-                for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
-                    Physics *pi = ALL_PHYSICS[i];
+                for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
+                    Physics *pi = WM_ALL_PHYSICS[i];
                     if (!pi) continue;
-                    if (pi->type != PHYSICS_T_MARBLE) continue;
+                    if (pi->type != WM_PHYSICS_T_MARBLE) continue;
                     if (pi->x < FIX16(160)) {
                         ++left_marbles;
                     } else if (pi->x > FIX16(160)) {
@@ -196,7 +196,7 @@ bool _special_phys_handle(Physics *p) {
                 SPR_setAnim(p->sprite, 0);
             }
         }
-        if ((!p->in_tray) && (!p->held) && p->ttl == 0 && abs(p->dx) <= PHYSICS_SLOW_THRESH) {
+        if ((!p->in_tray) && (!p->held) && p->ttl == 0 && abs(p->dx) <= WM_PHYSICS_SLOW_THRESH) {
             ++p->slow_frames;
             if (p->slow_frames >= 120) {
                 p->ttl = 3 * 3;
@@ -209,8 +209,8 @@ bool _special_phys_handle(Physics *p) {
     return FALSE;
 }
 
-void _collision_sfx(Physics *p1, Physics *p2) {
-    Physics *pi, *pj;
+void _collision_sfx(WM_Physics *p1, WM_Physics *p2) {
+    WM_Physics *pi, *pj;
     if (p1->type <= p2->type) {
         pi = p1;
         pj = p2;
@@ -220,15 +220,15 @@ void _collision_sfx(Physics *p1, Physics *p2) {
     }
     u8 sample = 0;
     switch (pi->type) {
-        case PHYSICS_T_MARBLE:
+        case WM_PHYSICS_T_MARBLE:
             switch (pj->type) {
-                case PHYSICS_T_MARBLE:
-                    sample = SND_SAMPLE_COL_MARBLE_MARBLE;   
+                case WM_PHYSICS_T_MARBLE:
+                    sample = WM_SND_SAMPLE_COL_MARBLE_MARBLE;   
                     break;
-                case PHYSICS_T_TARGET:
-                    sample = SND_SAMPLE_COL_MARBLE_TARGET;    
+                case WM_PHYSICS_T_TARGET:
+                    sample = WM_SND_SAMPLE_COL_MARBLE_TARGET;    
                     break;
-                case PHYSICS_T_BUMPER:
+                case WM_PHYSICS_T_BUMPER:
                     if (pj->broken) {
                         /*
                         if (pj->anim_frames == 0) {
@@ -236,20 +236,20 @@ void _collision_sfx(Physics *p1, Physics *p2) {
                         }
                         */
                     } else {
-                        sample = SND_SAMPLE_COL_MARBLE_BUMPER;    
+                        sample = WM_SND_SAMPLE_COL_MARBLE_BUMPER;    
                     }
                     break;
             }
             break;
-        case PHYSICS_T_TARGET:
-        case PHYSICS_T_BUMPER:
+        case WM_PHYSICS_T_TARGET:
+        case WM_PHYSICS_T_BUMPER:
         default:
             break;
     }
-    if (sample > 0) SFX_incidental(p1->game->sfx, sample);
+    if (sample > 0) WM_SFX_incidental(p1->game->sfx, sample);
 }
 
-bool Physics_check_collision(Physics *p1, Physics *p2) {
+bool WM_Physics_check_collision(WM_Physics *p1, WM_Physics *p2) {
     if (p1->stationary && p2->stationary) return FALSE;
     fix16 p1_next_x = p1->x + p1->dx;
     fix16 p2_next_x = p2->x + p2->dx;
@@ -273,12 +273,12 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
         if (thresh - current_dist >= FIX32(8)) {
             // If objects are already stuck together, delete the marbles
             bool rm_marble = FALSE;
-            if (p1->type == PHYSICS_T_MARBLE && p2->type == PHYSICS_T_TARGET && p1->ttl == 0) {
+            if (p1->type == WM_PHYSICS_T_MARBLE && p2->type == WM_PHYSICS_T_TARGET && p1->ttl == 0) {
                 p1->ttl = 3 * 3;
                 SPR_setAnim(p1->sprite, 3);
                 rm_marble = TRUE;
             }
-            if (p2->type == PHYSICS_T_MARBLE && p1->type == PHYSICS_T_TARGET && p2->ttl == 0) {
+            if (p2->type == WM_PHYSICS_T_MARBLE && p1->type == WM_PHYSICS_T_TARGET && p2->ttl == 0) {
                 p2->ttl = 3 * 3;
                 SPR_setAnim(p2->sprite, 3);
                 rm_marble = TRUE;
@@ -308,8 +308,8 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
             return TRUE;
         }
 
-        Physics *stationary = NULL;
-        Physics *mobile = NULL;
+        WM_Physics *stationary = NULL;
+        WM_Physics *mobile = NULL;
         if (p1->stationary) {
             stationary = p1;
             mobile = p2;
@@ -374,8 +374,8 @@ bool Physics_check_collision(Physics *p1, Physics *p2) {
     return FALSE;
 }
 
-void _apply_drag(Physics *p, u8 bitshift) {
-    fix16 drag = DRAG << bitshift;
+void _apply_drag(WM_Physics *p, u8 bitshift) {
+    fix16 drag = WM_DRAG << bitshift;
     if (!(p->frames_alive & 7)) {
         if (p->dx > drag) p->dx -= drag;
         if (p->dx < -drag) p->dx += drag;
@@ -387,7 +387,7 @@ void _apply_drag(Physics *p, u8 bitshift) {
     if (abs(p->dy) < drag) p->dy = 0;
 }
 
-void _handle_tray(Physics *p, u8 tray_no) {
+void _handle_tray(WM_Physics *p, u8 tray_no) {
     if (!p->in_tray) {
         if (tray_no == 0) {
             p->x = p->r;
@@ -397,25 +397,25 @@ void _handle_tray(Physics *p, u8 tray_no) {
         p->dx = 0;
         p->in_tray = TRUE;
         p->tray_no = tray_no;
-        Game_change_tray_marbles(p->game, tray_no, 1);
+        WM_Game_change_tray_marbles(p->game, tray_no, 1);
     }
     _apply_drag(p, 6);
 }
 
-void Physics_update(Physics *p) {
+void WM_Physics_update(WM_Physics *p) {
     ++p->frames_alive;
 
     if (p->ttl > 0) {
         --p->ttl;
         if (p->ttl == 0) {
-            Physics_del(p);
+            WM_Physics_del(p);
             return;
         }
     }
 
     if (_special_phys_handle(p)) return;
 
-    if (p->type == PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
+    if (p->type == WM_PHYSICS_T_MARBLE && !(p->frames_alive & 15)) {
 
         fix16 x, y;
         y = p->y;
@@ -437,7 +437,7 @@ void Physics_update(Physics *p) {
         }
         s16 r = fix16ToInt(y) >> 5;
         s16 c = (fix16ToInt(x) - 24) >> 5;
-        if (r < 0 || r >= BOARD_HEIGHT_TILES >> 2 || c < 0 || c >= BOARD_WIDTH_TILES >> 2) return;
+        if (r < 0 || r >= WM_BOARD_HEIGHT_TILES >> 2 || c < 0 || c >= WM_BOARD_WIDTH_TILES >> 2) return;
         ++p->game->board->traffic[r][c];
 
         /*
@@ -457,52 +457,44 @@ void Physics_update(Physics *p) {
     if (!(p->dx || p->dy)) return;
 
     _apply_drag(p, 0);
-    if (p->type == PHYSICS_T_TARGET) {
-        if (p->dx > PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dx = PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
-        if (p->dx < -PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dx = -PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
-        if (p->dy > PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dy = PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
-        if (p->dy < -PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dy = -PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
+    if (p->type == WM_PHYSICS_T_TARGET) {
+        if (p->dx > WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dx = WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
+        if (p->dx < -WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dx = -WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
+        if (p->dy > WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dy = WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
+        if (p->dy < -WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET) p->dy = -WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET;
     } else {
-        if (p->dx > PHYSICS_MAX_VELOCITY_VECTOR) p->dx = PHYSICS_MAX_VELOCITY_VECTOR;
-        if (p->dx < -PHYSICS_MAX_VELOCITY_VECTOR) p->dx = -PHYSICS_MAX_VELOCITY_VECTOR;
-        if (p->dy > PHYSICS_MAX_VELOCITY_VECTOR) p->dy = PHYSICS_MAX_VELOCITY_VECTOR;
-        if (p->dy < -PHYSICS_MAX_VELOCITY_VECTOR) p->dy = -PHYSICS_MAX_VELOCITY_VECTOR;
+        if (p->dx > WM_PHYSICS_MAX_VELOCITY_VECTOR) p->dx = WM_PHYSICS_MAX_VELOCITY_VECTOR;
+        if (p->dx < -WM_PHYSICS_MAX_VELOCITY_VECTOR) p->dx = -WM_PHYSICS_MAX_VELOCITY_VECTOR;
+        if (p->dy > WM_PHYSICS_MAX_VELOCITY_VECTOR) p->dy = WM_PHYSICS_MAX_VELOCITY_VECTOR;
+        if (p->dy < -WM_PHYSICS_MAX_VELOCITY_VECTOR) p->dy = -WM_PHYSICS_MAX_VELOCITY_VECTOR;
     }
 
     if (p->y - p->r <= 0) {
         p->y = p->r;
         p->dy = -p->dy;
-    } else if (p->y + p->r >= BOARD_HEIGHT) {
-        p->y = BOARD_HEIGHT - p->r;
+    } else if (p->y + p->r >= WM_BOARD_HEIGHT) {
+        p->y = WM_BOARD_HEIGHT - p->r;
         p->dy = -p->dy;
     }
-
-    /*
-    // dbg
-    if (p->x >= FIX16(24) + BOARD_WIDTH && p->type == PHYSICS_T_MARBLE) {
-        p->x = FIX16(23) + BOARD_WIDTH;
-        p->dx = -p->dx;
-    }
-    */
 
     if (p->has_collision) {
         if (p->x - p->r <= 0) {
             _handle_tray(p, 0);
         } else if (p->x >= FIX16(16) && p->x < FIX16(24)) {
             // on the shelf. shove into left tray
-            if (p->type == PHYSICS_T_TARGET) Game_score(p->game, 1);
+            if (p->type == WM_PHYSICS_T_TARGET) WM_Game_score(p->game, 1);
             p->dx = -FIX16(3);
             p->dy = FIX16(3);
-        } else if (p->x >= FIX16(24) + BOARD_WIDTH && p->x < FIX16(32) + BOARD_WIDTH) {
+        } else if (p->x >= FIX16(24) + WM_BOARD_WIDTH && p->x < FIX16(32) + WM_BOARD_WIDTH) {
             // on the shelf. shove into right tray
-            if (p->type == PHYSICS_T_TARGET) Game_score(p->game, 0);
+            if (p->type == WM_PHYSICS_T_TARGET) WM_Game_score(p->game, 0);
             p->dx = FIX16(3);
             p->dy = FIX16(3);
         } else if (p->x >= FIX16(320)) {
             _handle_tray(p, 1);
         }
     } else {
-        if (p->x >= FIX16(24) && p->x <= FIX16(24) + BOARD_WIDTH) {
+        if (p->x >= FIX16(24) && p->x <= FIX16(24) + WM_BOARD_WIDTH) {
             p->has_collision = TRUE;
         }
     }
@@ -517,44 +509,43 @@ void Physics_update(Physics *p) {
     }
 }
 
-void Physics_update_all(void) {
-    // TODO divide into sectors and only calc collisions between objects in the same sector
-    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
-        Physics *pi = ALL_PHYSICS[i];
+void WM_Physics_update_all(void) {
+    for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
+        Physics *pi = WM_ALL_PHYSICS[i];
         if (!pi) continue;
         if (!pi->has_collision) continue;
         if (pi->in_tray) continue;
-        for (u8 j = i + 1; j < PHYSICS_MAX_OBJECTS; ++j) {
-            Physics *pj = ALL_PHYSICS[j];
+        for (u8 j = i + 1; j < WM_PHYSICS_MAX_OBJECTS; ++j) {
+            WM_Physics *pj = WM_ALL_PHYSICS[j];
             if (!pj) continue;
             if (!pj->has_collision) continue;
             if (pj->in_tray) continue;
-            Physics_check_collision(pi, pj);
+            WM_Physics_check_collision(pi, pj);
         }
     }
-    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
+    for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
         
-        Physics *p = ALL_PHYSICS[i];
+        Physics *p = WM_ALL_PHYSICS[i];
         if (!p) continue;
-        Physics_update(p);
+        WM_Physics_update(p);
     }
 }
 
-Physics *Physics_init_marble(fix16 x, fix16 y, Game *g) {
-    Physics *p = Physics_init(g);
+WM_Physics *WM_Physics_init_marble(fix16 x, fix16 y, WM_Game *g) {
+    WM_Physics *p = WM_Physics_init(g);
     if (!p) return NULL;
 
     p->r = FIX16(8);
     p->m = FIX16(1);
     p->inv_m = FIX16(1);
-    p->type = PHYSICS_T_MARBLE;
+    p->type = WM_PHYSICS_T_MARBLE;
 
     p->x = x;
     p->y = y;
     p->sprite_offset_x = FIX16(8);
     p->sprite_offset_y = FIX16(8);
     p->sprite = SPR_addSprite(
-        &SPR_MARBLE,
+        &SPR_WM_MARBLE,
         fix16ToRoundedInt(x - p->sprite_offset_x),
         fix16ToRoundedInt(y - p->sprite_offset_y),
         TILE_ATTR(PAL1, TRUE, FALSE, FALSE) 
@@ -565,7 +556,7 @@ Physics *Physics_init_marble(fix16 x, fix16 y, Game *g) {
     return p;
 }
 
-Physics *Physics_init_target(fix16 x, fix16 y, Game *g) {
+Physics *WM_Physics_init_target(fix16 x, fix16 y, Game *g) {
     Physics *p = Physics_init(g);
     if (!p) return NULL;
 
