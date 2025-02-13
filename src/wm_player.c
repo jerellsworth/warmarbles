@@ -1,7 +1,7 @@
-#include "bh.h"
+#include "wm.h"
 
-Player *Player_init(Game *g, Guy *guy, u8 joy, u8 ai) {
-    Player *p = st_calloc(1, sizeof(Player));
+WM_Player *WM_Player_init(WM_Game *g, WM_Guy *guy, u8 joy, u8 ai) {
+    WM_Player *p = st_calloc(1, sizeof(WM_Player));
     p->game = g;
     p->guy = guy;
     p->joy = joy;
@@ -11,15 +11,15 @@ Player *Player_init(Game *g, Guy *guy, u8 joy, u8 ai) {
     return p;
 }
 
-void Player_del(Player *p) {
+void WM_Player_del(WM_Player *p) {
     free(p);
 }
 
-void _ai(Player *p) {
-    if (p->game->state == GAME_STATE_PAUSED) return;
+void _ai(WM_Player *p) {
+    if (p->game->state == WM_GAME_STATE_PAUSED) return;
     ++p->ai_frames_alive;
     Guy *g = p->guy;
-    if (g->throw_frames == GUY_FRAMES_PER_ANIM * (10 - 5) + 1) {
+    if (g->throw_frames == WM_GUY_FRAMES_PER_ANIM * (10 - 5) + 1) {
         Physics *target = p->game->target;
         fix16 throw_center_x = g->x + g->x_offset_marble;
         fix16 throw_center_y = g->y + FIX16(8);
@@ -36,10 +36,10 @@ void _ai(Player *p) {
         } else {
             u16 marbles_up = 0;
             u16 marbles_down = 0;
-            for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
-                Physics *ph = ALL_PHYSICS[i];
+            for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
+                Physics *ph = WM_ALL_PHYSICS[i];
                 if (!ph) continue;
-                if (ph->type != PHYSICS_T_MARBLE) continue;
+                if (ph->type != WM_PHYSICS_T_MARBLE) continue;
                 if (ph->in_tray && ph->tray_no == 1) {
                     // TODO only works if ai is on right side
                     if (ph->y < g->y + FIX16(64)) {
@@ -70,22 +70,22 @@ void _ai(Player *p) {
     }
 }
 
-void Player_update(Player *p) {
+void WM_Player_update(WM_Player *p) {
     if (p->ai) return _ai(p);
     u16 joy = JOY_readJoypad(p->joy);
     if (p->cooldown > 0) --p->cooldown;
     if (p->cooldown == 0 && (joy & BUTTON_START)) {
-        if (p->game->state == GAME_STATE_IN_PROGRESS) {
-            SFX_incidental(p->game->sfx, SND_SAMPLE_CONFIRM);
-            p->game->state = GAME_STATE_PAUSED;
+        if (p->game->state == WM_GAME_STATE_IN_PROGRESS) {
+            WM_SFX_incidental(p->game->sfx, WM_SND_SAMPLE_CONFIRM);
+            p->game->state = WM_GAME_STATE_PAUSED;
             p->cooldown = 30;
-        } else if (p->game->state == GAME_STATE_PAUSED) {
-            SFX_incidental(p->game->sfx, SND_SAMPLE_CONFIRM);
+        } else if (p->game->state == WM_GAME_STATE_PAUSED) {
+            SFX_incidental(p->game->sfx, WM_SND_SAMPLE_CONFIRM);
             p->cooldown = 30;
-            p->game->state = GAME_STATE_IN_PROGRESS;
+            p->game->state = WM_GAME_STATE_IN_PROGRESS;
         }
     }
-    if (p->game->state == GAME_STATE_PAUSED) return;
+    if (p->game->state == WM_GAME_STATE_PAUSED) return;
 
     fix16 dx, dy;
     if (joy & BUTTON_UP) {
@@ -98,12 +98,12 @@ void Player_update(Player *p) {
     } else if (joy & BUTTON_RIGHT) {
         dx = FIX16(4);
     }
-    Guy_move(p->guy, dx, dy);
+    WM_Guy_move(p->guy, dx, dy);
     if (joy & (BUTTON_A | BUTTON_B | BUTTON_C)) {
         if (p->guy->holding && p->cooldown == 0) {
-            Guy_throw(p->guy);
+            WM_Guy_throw(p->guy);
         } else if (!p->guy->holding) {
-            Guy_grab(p->guy);
+            WM_Guy_grab(p->guy);
             p->cooldown = 10;
         }
     }

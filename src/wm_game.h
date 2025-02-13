@@ -4,7 +4,7 @@
 #include "wm.h"
 
 #define WM_GAME_N_MARBLES 5
-#define WM_GAME_WINNING_SCORE 7
+#define WM_GAME_WINNING_SCORE 3
 
 enum WM_GameState_e {
     WM_GAME_STATE_IN_PROGRESS,

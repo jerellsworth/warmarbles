@@ -556,8 +556,8 @@ WM_Physics *WM_Physics_init_marble(fix16 x, fix16 y, WM_Game *g) {
     return p;
 }
 
-Physics *WM_Physics_init_target(fix16 x, fix16 y, Game *g) {
-    Physics *p = Physics_init(g);
+Physics *WM_Physics_init_target(fix16 x, fix16 y, WM_Game *g) {
+    WM_Physics *p = WM_Physics_init(g);
     if (!p) return NULL;
 
     p->r = FIX16(16);
@@ -569,17 +569,17 @@ Physics *WM_Physics_init_target(fix16 x, fix16 y, Game *g) {
     p->sprite_offset_x = FIX16(16);
     p->sprite_offset_y = FIX16(16);
     p->sprite = SPR_addSprite(
-        &SPR_TARGET,
+        &SPR_WM_TARGET,
         fix16ToRoundedInt(x - p->sprite_offset_x),
         fix16ToRoundedInt(y - p->sprite_offset_y),
         TILE_ATTR(PAL3, TRUE, FALSE, FALSE) 
         );
-    p->type = PHYSICS_T_TARGET;
+    p->type = WM_PHYSICS_T_TARGET;
     return p;
 }
 
-Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
-    Physics *p = Physics_init(g);
+Physics *Physics_init_bumper(fix16 x, fix16 y, WM_Game *g) {
+    WM_Physics *p = WM_Physics_init(g);
     if (!p) return NULL;
 
     p->r = FIX16(16);
@@ -600,39 +600,39 @@ Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g) {
     p->pal = PAL3;
     _bumper_draw(p);
 
-    p->type = PHYSICS_T_BUMPER;
+    p->type = WM_PHYSICS_T_BUMPER;
     return p;
 }
 
-Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t) {
-    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
-        Physics *pi = ALL_PHYSICS[i];
+WM_Physics *WM_Physics_find_nearby(fix16 x, fix16 y, WM_PhysicsType t) {
+    for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
+        WM_Physics *pi = WM_ALL_PHYSICS[i];
         if (!pi) continue;
         if (pi->type != t) continue;
         fix16 dx = x - pi->x;        
         fix16 dy = y - pi->y;        
         fix32 dist = fix16MulTo32(dx, dx) + fix16MulTo32(dy, dy);
-        if (dist <= PHYSICS_NEARBY_THRESH) {
+        if (dist <= WM_PHYSICS_NEARBY_THRESH) {
             return pi;
         }
     }
     return NULL;
 }
 
-u8 Physics_count_type(PhysicsType t) {
+u8 WM_Physics_count_type(WM_PhysicsType t) {
     u8 ret = 0;
-    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
-        Physics *pi = ALL_PHYSICS[i];
+    for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
+        WM_Physics *pi = WM_ALL_PHYSICS[i];
         if (pi && pi->type == t) ++ret;
     }
     return ret;
 }
 
-void Physics_del_type(PhysicsType t) {
-    for (u8 i = 0; i < PHYSICS_MAX_OBJECTS; ++i) {
-        Physics *pi = ALL_PHYSICS[i];
+void WM_Physics_del_type(WM_PhysicsType t) {
+    for (u8 i = 0; i < WM_PHYSICS_MAX_OBJECTS; ++i) {
+        WM_Physics *pi = WM_ALL_PHYSICS[i];
         if (pi && pi->type == t) {
-            Physics_del(pi); 
+            WM_Physics_del(pi); 
         }
     }
 }

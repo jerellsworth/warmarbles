@@ -1,25 +1,25 @@
-#ifndef PHYSICS_H
-#define PHYSICS_H
+#ifndef WM_PHYSICS_H
+#define WM_PHYSICS_H
 
-#include "bh.h"
+#include "wm.h"
 
-#define PHYSICS_MAX_OBJECTS 20
-#define PHYSICS_NEARBY_THRESH FIX32(64)
-#define PHYSICS_MAX_VELOCITY_VECTOR FIX16(6)
-#define PHYSICS_MAX_VELOCITY_VECTOR_TARGET FIX16(4)
-#define PHYSICS_FRAMES_TO_BUMPER_BREAK 80
-#define PHYSICS_SLOW_THRESH FIX16(0.5)
+#define WM_PHYSICS_MAX_OBJECTS 20
+#define WM_PHYSICS_NEARBY_THRESH FIX32(64)
+#define WM_PHYSICS_MAX_VELOCITY_VECTOR FIX16(6)
+#define WM_PHYSICS_MAX_VELOCITY_VECTOR_TARGET FIX16(4)
+#define WM_PHYSICS_FRAMES_TO_BUMPER_BREAK 80
+#define WM_PHYSICS_SLOW_THRESH FIX16(0.5)
 
-#define DRAG FIX16(0.025)
+#define WM_DRAG FIX16(0.025)
 
-enum PhysicsType_e {
-    PHYSICS_T_MARBLE,
-    PHYSICS_T_TARGET,
-    PHYSICS_T_BUMPER
+enum WM_PhysicsType_e {
+    WM_PHYSICS_T_MARBLE,
+    WM_PHYSICS_T_TARGET,
+    WM_PHYSICS_T_BUMPER
 };
 
-struct Physics_s {
-    Game *game;
+struct WM_Physics_s {
+    WM_Game *game;
     u8 reg_idx;
 
     fix16 x;
@@ -54,7 +54,7 @@ struct Physics_s {
     u8 pal;
 
     u8 tray_no;
-    PhysicsType type;
+    WM_PhysicsType type;
 
     u16 collided_frames;
     u16 slow_frames;
@@ -65,24 +65,24 @@ struct Physics_s {
     u16 ttl;
 };
 
-extern Physics **ALL_PHYSICS;
+extern WM_Physics **WM_ALL_PHYSICS;
 
-void Physics_engine_init(Game *g);
+void WM_Physics_engine_init(WM_Game *g);
 
-Physics *Physics_init(Game *g);
-void Physics_del(Physics *p);
+WM_Physics *WM_Physics_init(WM_Game *g);
+void WM_Physics_del(WM_Physics *p);
 
-bool Physics_check_collision(Physics *p1, Physics *p2);
-void Physics_update(Physics *p);
-void Physics_update_all(void);
+bool WM_Physics_check_collision(WM_Physics *p1, WM_Physics *p2);
+void WM_Physics_update(WM_Physics *p);
+void WM_Physics_update_all(void);
 
-Physics *Physics_init_marble(fix16 x, fix16 y, Game *g);
-Physics *Physics_init_target(fix16 x, fix16 y, Game *g);
-Physics *Physics_init_bumper(fix16 x, fix16 y, Game *g);
+WM_Physics *Physics_init_marble(fix16 x, fix16 y, WM_Game *g);
+WM_Physics *Physics_init_target(fix16 x, fix16 y, WM_Game *g);
+WM_Physics *Physics_init_bumper(fix16 x, fix16 y, WM_Game *g);
 
-Physics *Physics_find_nearby(fix16 x, fix16 y, PhysicsType t);
+WM_Physics *Physics_find_nearby(fix16 x, fix16 y, WM_PhysicsType t);
 
-u8 Physics_count_type(PhysicsType t);
-void Physics_del_type(PhysicsType t);
+u8 WM_Physics_count_type(WM_PhysicsType t);
+void WM_Physics_del_type(WM_PhysicsType t);
 
 #endif

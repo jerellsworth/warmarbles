@@ -1,12 +1,12 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef WM_PLAYER_H
+#define WM_PLAYER_H
 
-#include "bh.h"
+#include "wm.h"
 
-struct Player_s {
+struct WM_Player_s {
     u8 cooldown;
-    Game *game;
-    Guy *guy;
+    WM_Game *game;
+    WM_Guy *guy;
     u8 joy;
     u8 ai;
 
@@ -15,9 +15,9 @@ struct Player_s {
     u16 ai_frames_next_choice;
 };
 
-Player *Player_init(Game *g, Guy *guy, u8 joy, u8 ai);
-void Player_del(Player *p);
+WM_Player *WM_Player_init(WM_Game *g, WM_Guy *guy, u8 joy, u8 ai);
+void WM_Player_del(WM_Player *p);
 
-void Player_update(Player *p);
+void WM_Player_update(WM_Player *p);
 
 #endif
